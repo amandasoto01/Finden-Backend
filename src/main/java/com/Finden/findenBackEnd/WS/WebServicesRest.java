@@ -61,7 +61,6 @@ public class WebServicesRest {
 	@DeleteMapping("/DeleteUser")
 	@ResponseStatus
 	public String DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
-		System.out.println(correo);
 		return dtiService.Delete(correo, email);
 	}
 	
@@ -76,6 +75,11 @@ public class WebServicesRest {
 		return dtiService.CreateWiringCenter(email,add);
 	}
 	
+	@PostMapping("/AddPuerto")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
+		return dtiService.CreatePort(email,add);
+	}
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
 	@PostMapping("/holis")
 	public  String plano(@RequestBody MultipartFile file) {
@@ -118,3 +122,4 @@ public class WebServicesRest {
 	}
 
 }
+
