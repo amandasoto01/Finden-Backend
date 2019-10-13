@@ -324,7 +324,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 							}
 							port.setSwitch_id(u.get(0).getId());
 							port.setSwitch_WritingCenter_id(u.get(0).getWritingCenter_id());
-							System.out.println(port.toString());
 							portDAO.save(port);
 						return "Puerto Creado con exito";	
 					}else {
@@ -340,6 +339,39 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}else {
 			return"El usuario no tiene los permisos suficientes";
 		}
+	}
+	
+	public String DeletePort(String port, String email) {
+		if(Check(email, 1)) {
+			if(email==null) {
+				return "no se envio el nombre del puerto";
+			}else {
+				Port p=portDAO.findByName(port);
+				if(p==null) {
+					return "El puerto no existe recuerde que el nombre es: tipo “Espacio” nombre del centro de cableado “-” número de identificación del puerto en el patchpanel. ";
+				}else {
+					portDAO.delete(p);
+					return "Puerto eliminado exitosamente";
+				}
+				
+			}
+		}else {
+			return "El usuario no tiene permiso para realizar esta acción";
+		}
+	}
+	
+	public String UpdatePort(String email,UpdatePort updatePort) {
+		Port port= new Port();
+		if(Check(email, 1)) {
+			if(updatePort.getPort()==null) {
+				return "No se ingreso un puerto a modificar";
+			}else {
+				return "Puerto actualizado con exito";
+			}
+		}else {
+			return "El usuario no tiene permiso para realizar esta acción";
+		}
+		
 	}
 	
 	private boolean checkBuildingsFloor(int building, int floor) {

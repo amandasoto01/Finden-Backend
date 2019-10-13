@@ -80,6 +80,19 @@ public class WebServicesRest {
 	public String CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
 		return dtiService.CreatePort(email,add);
 	}
+	
+	@DeleteMapping("/DeletePuerto")
+	@ResponseStatus
+	public String DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
+		return dtiService.DeletePort(port, email);
+	}
+	
+	@PutMapping("/UpdatePuerto")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
+		return dtiService.UpdatePort(email, updatePort);
+	}
+	
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
 	@PostMapping("/holis")
 	public  String plano(@RequestBody MultipartFile file) {

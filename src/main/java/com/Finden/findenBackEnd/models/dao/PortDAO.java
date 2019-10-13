@@ -7,4 +7,5 @@ import com.Finden.findenBackEnd.models.entity.Port;
 
 public interface PortDAO extends CrudRepository<Port, Integer>,QueryByExampleExecutor<Port>{
 
+	Port findByName(String name);
 }
