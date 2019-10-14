@@ -361,12 +361,112 @@ public class FacadeDTIImpl implements FacadeDTI{
 	}
 	
 	public String UpdatePort(String email,UpdatePort updatePort) {
-		Port port= new Port();
+		Port port;
+		Port newPort= new Port();
 		if(Check(email, 1)) {
 			if(updatePort.getPort()==null) {
 				return "No se ingreso un puerto a modificar";
 			}else {
-				return "Puerto actualizado con exito";
+				port= portDAO.findByName(updatePort.getPort());
+				if(port==null) {
+					return"No se encontro el puerto: "+updatePort.getPort();
+				}else {
+					if(updatePort.getBuilding()!=null) {
+						Building b= new Building();
+						b.setId(null);
+						b.setName(null);
+						b.setNumber(updatePort.getBuilding());
+						List<Building> bu= new ArrayList<Building>();
+						Iterable<Building>I;
+						Example<Building>buildingExample=Example.of(b);
+						I=buildingDAO.findAll(buildingExample);
+						for(Building build:I) {
+							bu.add(build);
+						}
+						if(bu.size()>0) {
+							newPort.setFloor_Building_Id(bu.get(0).getId());
+						}else {
+							return "No se encontro el piso: "+ updatePort.getBuilding();
+						}
+					}else {
+						newPort.setFloor_Building_Id(port.getFloor_Building_Id());
+					}
+					if(updatePort.getFloor()!=null) {
+						Floor f= new Floor();
+						f.setBuilding_Id(newPort.getFloor_Building_Id());
+						f.setNumber(updatePort.getFloor());
+						f.setId(null);
+						List<Floor> fl= new ArrayList<Floor>();
+						Iterable<Floor>F;
+						Example<Floor>floorExample=Example.of(f);
+						F=floorDAO.findAll(floorExample);
+						for(Floor floo:F) {
+							fl.add(floo);
+						}
+						if(fl.size()>0) {
+							newPort.setFloor_Id(fl.get(0).getId());
+						}else {
+							return "No se encontro el piso: "+updatePort.getFloor();
+						}
+					}else {
+						newPort.setFloor_Id(port.getFloor_Id());
+					}
+					if(updatePort.getName()!=null) {
+						newPort.setName(updatePort.getName());
+					}else {
+						newPort.setName(port.getName());
+					}
+					if(updatePort.getNPortSwitch()!=null) {
+						newPort.setPortInSwitch(updatePort.getNPortSwitch());
+					}else {
+						newPort.setPortInSwitch(port.getPortInSwitch());
+					}
+					if(updatePort.getType()!=null) {
+						if(CheckNamePort(updatePort.getType())!=0){
+							newPort.setType(CheckNamePort(updatePort.getType()));
+						}else {
+							return "No es valido el tipo de puerto recuerde que son: V,D y VD";
+						}
+					}else {
+						newPort.setType(port.getType());
+					}
+					if(updatePort.getWiringCenter()!=null) {
+						WritingCenter wc;
+						wc= wcDAO.findByName(updatePort.getWiringCenter());
+						if(wc!=null) {
+							newPort.setSwitch_WritingCenter_id(wc.getId());
+						}else {
+							return "No se encontro el centro de cableado: "+updatePort.getWiringCenter();
+						}
+					}else {
+						newPort.setSwitch_WritingCenter_id(port.getSwitch_WritingCenter_id());
+					}
+					if(updatePort.getSwitch()!=null) {
+						Switch s = new Switch();
+						List<Switch> u= new ArrayList<Switch>();
+						Iterable<Switch>SI;
+						s.setWritingCenter_id(newPort.getSwitch_WritingCenter_id());
+						s.setNumeroSwitch(updatePort.getSwitch());
+						s.setIndex(null);
+						s.setId(null);
+						Example<Switch>switchExample=Example.of(s);
+						SI=switchDAO.findAll(switchExample);
+						for(Switch swit:SI) {
+							u.add(swit);
+						}
+						if(u.size()>0) {
+						newPort.setSwitch_id(u.get(0).getId());
+						}else {
+							return "No se encontro el switch";
+						}
+					}else {
+						newPort.setSwitch_id(port.getSwitch_id());
+					}
+					newPort.setId(port.getId());
+					portDAO.save(newPort);
+					return "Puerto actualizado con exito";
+				}
+				
 			}
 		}else {
 			return "El usuario no tiene permiso para realizar esta acción";
