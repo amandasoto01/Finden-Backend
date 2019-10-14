@@ -7,19 +7,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 public class Main {
 
     public static void main(String[] args) {
-    	String textoSinEncriptar="123"; 
-    	String textoEncriptadoConSHA=DigestUtils.sha1Hex(textoSinEncriptar); 
-    	System.out.println("Texto Encriptado con SHA : "+textoEncriptadoConSHA);
-    }
-}
-       /** try {
+ try {
 
         	/**
         	 1. se abre el archivo
         	 2. se lee el plano
         	 **/
     	
-    	/*
             File file = new File("Arboleda P3.dxf");// se abre el archivo.
             ArrayList<String> puertos  = ReadAutocadFile.getAutocadFile(file.getAbsolutePath());//se hace la lectura del plano y se guarda en una lista los puertos.
             for (int i = 0; i < puertos.size(); i++) {
@@ -29,4 +23,4 @@ public class Main {
         	System.err.println(e);
         }
     }
-}**/
+}

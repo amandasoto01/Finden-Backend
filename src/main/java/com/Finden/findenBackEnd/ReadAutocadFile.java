@@ -14,7 +14,7 @@ public class ReadAutocadFile {
         Parser parser = ParserBuilder.createDefaultParser();
         parser.parse(filePath, DXFParser.DEFAULT_ENCODING);
         DXFDocument doc = parser.getDocument();
-        List<DXFText> lst = doc.getDXFLayer("MUROS").getDXFEntities(DXFConstants.ENTITY_TYPE_TEXT);
+        List<DXFText> lst = doc.getDXFLayer("PUERTOS").getDXFEntities(DXFConstants.ENTITY_TYPE_TEXT);
         //lst palabras encontradas en la capa MUROS
         //Cantidad de puertos lst.size();
         System.out.println(lst.size());
