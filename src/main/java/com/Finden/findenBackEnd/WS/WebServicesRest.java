@@ -103,10 +103,14 @@ public class WebServicesRest {
 	}
 	@PostMapping("/AddPlane")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
-		return ContratistaService.AddPLane(email, File); 
+	public String AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File, String Description) {
+		return ContratistaService.AddPLane(email, File,Description); 
 	}
-	
+	@DeleteMapping("/DeletePlane")
+	@ResponseStatus
+	public String DeletePlane(@RequestHeader("Email") String email,@RequestBody String NamePlane) {
+		return ContratistaService.DeletePlane(email,NamePlane);
+	}
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
 	@PostMapping("/holis")
 	public  String plano(@RequestBody MultipartFile file) {

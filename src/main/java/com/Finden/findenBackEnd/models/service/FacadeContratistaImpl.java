@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -23,10 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.models.dao.BuildingDAO;
 import com.Finden.findenBackEnd.models.dao.FloorDAO;
+import com.Finden.findenBackEnd.models.dao.PlaneDAO;
+import com.Finden.findenBackEnd.models.dao.PlaneXUserDAO;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.Building;
 import com.Finden.findenBackEnd.models.entity.Floor;
 import com.Finden.findenBackEnd.models.entity.User;
+import com.Finden.findenBackEnd.models.entity.Plane;
+import com.Finden.findenBackEnd.models.entity.PlaneXUser;
 
 @Service
 public class FacadeContratistaImpl implements FacadeContratista {
@@ -40,9 +45,56 @@ public class FacadeContratistaImpl implements FacadeContratista {
 	@Autowired
 	private FloorDAO floorDAO;
 	
-	public String AddPLane(String Email, MultipartFile plane) {
+	@Autowired
+	private PlaneDAO planeDAO;
+	
+	@Autowired
+	private PlaneXUserDAO pxuDAO;
+	
+	@Transactional
+	public String AddPLane(String Email, MultipartFile plane,String description) {
 		if(Check(Email, 1)||Check(Email, 3)) {
-			return "Plano creado exitosamente";
+			if(plane.getOriginalFilename()==null) {
+				return "No se seleciono un archivo";
+			}else if(plane.getOriginalFilename().contains(".dxf")){
+				try {
+					StringTokenizer token= new StringTokenizer(plane.getOriginalFilename(),"-");
+					int building= Integer.parseInt(token.nextToken().trim());
+					String floor=token.nextToken();
+					List<Integer>res= new ArrayList<Integer>();
+					if(floor.contains("S")) {
+						StringTokenizer token2= new StringTokenizer(floor,"."); 
+						String number=token2.nextToken().substring(1);
+						int floorReal= Integer.parseInt(number)*-1;
+						res=CheckBuildingFloor(building, floorReal);
+						if(res==null) {
+							return "El edificio o el piso no existe";
+						}else {
+							return SavePlane(plane,Email, "Edificio "+building+"/sotano "+floorReal*-1+"/revisión", description, res.get(1), res.get(0));
+						}
+					}else if(floor.contains("P")) {
+						StringTokenizer token2= new StringTokenizer(floor,".");
+						String number=token2.nextToken().substring(1);
+						int floorReal= Integer.parseInt(number);
+						res=CheckBuildingFloor(building, floorReal);
+						if(res==null) {
+							return "El edificio o el piso no existe";
+						}else {
+							return SavePlane(plane,Email, "Edificio "+building+"/piso "+floorReal* 1+"/revisión", description, res.get(1), res.get(0));
+							
+						}	
+					}else {
+						return "El nombre se encuentra mal escrito";
+					}
+					
+				} catch (Exception e) {
+					return "El nombre se encuentra mal escrito"+ e;
+				}
+				
+				
+			}else {
+				return "El plano no es un archivo .dxf";
+			}
 			
 		}else {
 			return "El usuario no tiene los permisos necesarios";
@@ -100,6 +152,44 @@ public class FacadeContratistaImpl implements FacadeContratista {
 		}else {
 			return "El usuario no tiene los permisos necesarios";
 		}
+	}
+	
+	@Transactional
+	public String DeletePlane(String Email, String NamePlane) {
+		if(Check(Email, 1)||Check(Email, 3)) {
+			Plane plane= new Plane();
+			plane=planeDAO.findByName(NamePlane);
+			if(plane.getId()!=null && (plane.getState()==1||plane.getState()==2)) {
+				List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
+				PlaneXUser pxu= new PlaneXUser();
+				pxu.setPlane_Id(plane.getId());
+				pxu.setUser_Id(null);
+				System.out.println(pxu.toString());
+				Example<PlaneXUser>userExample=Example.of(pxu);
+				Iterable<PlaneXUser>I;
+				I=pxuDAO.findAll(userExample);
+				for(PlaneXUser usu:I) {
+					pxuList.add(usu);
+				}
+				if(pxuList.size()>0) {
+					pxuDAO.delete(pxuList.get(0));
+					File file= new File(plane.getDir());
+					if(file.delete()) {
+						planeDAO.delete(plane);
+						return "El plano se elimino exitosamente";	
+					}else {
+						return "Problema inesperado por favor comuniquese con la DTI javeriana";	
+					}
+				}else {
+					return "Problema inesperado por favor comuniquese con la DTI javeriana";
+				}
+			}else {
+				return"El plano no existe o no puede ser eliminado";
+			}
+		}else {
+			return "El usuario no tiene los permisos necesarios";
+		}
+
 	}
 	
 	private boolean Check(String email, int i) {
@@ -217,6 +307,7 @@ public class FacadeContratistaImpl implements FacadeContratista {
         		+ portsD+" tipo D "+RportsD+" Repetidos del tipo D\n"
         		+ "y otros que no se cuentas:\n"+others;
     }
+	
 	private boolean ChecknamePorts(ArrayList<String> list,String name) {
 		for (int i = 0; i < list.size(); i++) {
 			if(list.get(0).equals(name)) {
@@ -225,11 +316,88 @@ public class FacadeContratistaImpl implements FacadeContratista {
 		}
 		return false;
 	}
-	private String guardarVerification(MultipartFile f) throws IOException {
-	String ruta="C:/Users/javier/Desktop/planos/"+f.getOriginalFilename();
-	File archivo= new File(ruta);
+	
+	private void Save(MultipartFile f,String path) throws IOException {
+	File archivo= new File(path);
 	f.transferTo(archivo);
-	return "exito";
 	}
 	
+	@Transactional
+	private String SavePlane(MultipartFile plane,String email,String path,String description,int floor,int Building) {
+		Plane p= new Plane();
+		File dir= new File("C:/Users/javier/Desktop/planos/"+path);
+		Date date= new Date();
+		StringTokenizer token= new StringTokenizer(plane.getOriginalFilename(),".");
+		String name,auxname;
+		int aux;
+		String [] NFiles=dir.list();
+		//Problema ni el HPTA !!! de aqui 
+		if(NFiles==null) {
+			name=token.nextToken()+"-R-1"+".dxf";
+		}else {
+			auxname=token.nextToken();
+			aux=1;
+			for (int i = 0; i < NFiles.length; i++) {
+				if(NFiles[i].compareToIgnoreCase(auxname+"-R-"+aux+".dxf")==0) {
+					aux++;
+					i=0;
+				}
+			}
+			name=auxname+"-R-"+aux+".dxf";
+		}
+		/**else {
+			auxname=token.nextToken();
+			aux=1;
+			
+			while(NoProblem) {
+				for (int i = 0; i < NFiles.length&&NoProblem==true; i++) {
+					if(NFiles[i].compareToIgnoreCase(auxname+"-R-"+aux+".dxf")!=0){
+						NoProblem=false;
+					}
+			}
+				if(NoProblem) {
+					aux+=1;
+				}
+				if(aux==NFiles.length+1) {
+					NoProblem=false;
+				}
+			}
+			
+			name=auxname+"-R-"+aux+".dxf";
+		}*/
+		p.setDateUpload(date);
+		p.setDescription(description);
+		p.setFloor_Building_Id(Building);
+		p.setFloor_id(floor);
+		p.setName(name);
+		System.out.println(name);
+		p.setState(1);
+		p.setDir("C:/Users/javier/Desktop/planos/"+path+"/"+name);
+		try {
+			Save(plane,"C:/Users/javier/Desktop/planos/"+path+"/"+name);
+			planeDAO.save(p);
+			p= new Plane();
+			p=planeDAO.findByName(name);
+			User us = new User();
+			List<User> u= new ArrayList<User>();
+			Iterable<User>I;
+			us.setEmail(email);
+			us.setName(null);
+			us.setType(null);
+			us.setPassword(null);
+			Example<User>userExample=Example.of(us);
+			I=userDAO.findAll(userExample);
+			for(User usu:I) {
+				u.add(usu);
+			}
+			PlaneXUser pxu= new PlaneXUser();
+			pxu.setPlane_Id(p.getId());
+			pxu.setUser_Id(u.get(0).getId());
+			pxuDAO.save(pxu);
+			return "El plano se a agregado exitosamente";
+		} catch (IOException e) {
+			return "Se presento el error: "+e;
+		}
+		
+	}
 }
