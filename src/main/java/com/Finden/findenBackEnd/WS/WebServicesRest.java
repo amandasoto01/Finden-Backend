@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.ReadAutocadFile;
 import com.Finden.findenBackEnd.models.entity.*;
+import com.Finden.findenBackEnd.models.service.FacadeContratista;
 import com.Finden.findenBackEnd.models.service.FacadeDTI;
 import com.Finden.findenBackEnd.models.service.FacadeGeneral;
 import com.sun.mail.handlers.multipart_mixed;
@@ -30,6 +31,9 @@ public class WebServicesRest {
 	
 	@Autowired
 	private FacadeDTI dtiService;
+	
+	@Autowired
+	private FacadeContratista ContratistaService;
 	
 	@PostMapping("/Login")
 	public String login(@RequestBody User usuario) {
@@ -91,6 +95,16 @@ public class WebServicesRest {
 	@ResponseStatus(HttpStatus.CREATED)
 	public String UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
 		return dtiService.UpdatePort(email, updatePort);
+	}
+	@GetMapping("CheckPlane")
+	public String CheckPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
+		//System.out.println("You successfully uploaded " + file.getOriginalFilename() + "!");
+		return ContratistaService.CheckPlane(email,File);
+	}
+	@PostMapping("/AddPlane")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
+		return ContratistaService.AddPLane(email, File); 
 	}
 	
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
