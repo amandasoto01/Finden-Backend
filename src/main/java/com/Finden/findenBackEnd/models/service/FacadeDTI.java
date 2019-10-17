@@ -4,7 +4,9 @@ import com.Finden.findenBackEnd.models.entity.AddBuilding;
 import com.Finden.findenBackEnd.models.entity.AddPort;
 import com.Finden.findenBackEnd.models.entity.Addwritingcenter;
 import com.Finden.findenBackEnd.models.entity.User;
-import com.Finden.findenBackEnd.models.entity.UpdatePort;;
+import com.Finden.findenBackEnd.models.entity.UpdatePort;
+import com.Finden.findenBackEnd.models.entity.ApprovePlane;
+
 
 public interface FacadeDTI {
 
@@ -23,5 +25,7 @@ public interface FacadeDTI {
 	public String DeletePort(String port, String email);
 	
 	public String UpdatePort(String email,UpdatePort updatePort);
+	
+	public String ApprovePlane(String email,ApprovePlane approvePlane);
 
 }

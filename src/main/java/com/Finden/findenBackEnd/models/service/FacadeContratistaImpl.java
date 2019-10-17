@@ -345,26 +345,6 @@ public class FacadeContratistaImpl implements FacadeContratista {
 			}
 			name=auxname+"-R-"+aux+".dxf";
 		}
-		/**else {
-			auxname=token.nextToken();
-			aux=1;
-			
-			while(NoProblem) {
-				for (int i = 0; i < NFiles.length&&NoProblem==true; i++) {
-					if(NFiles[i].compareToIgnoreCase(auxname+"-R-"+aux+".dxf")!=0){
-						NoProblem=false;
-					}
-			}
-				if(NoProblem) {
-					aux+=1;
-				}
-				if(aux==NFiles.length+1) {
-					NoProblem=false;
-				}
-			}
-			
-			name=auxname+"-R-"+aux+".dxf";
-		}*/
 		p.setDateUpload(date);
 		p.setDescription(description);
 		p.setFloor_Building_Id(Building);

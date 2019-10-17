@@ -10,4 +10,5 @@ import com.Finden.findenBackEnd.models.entity.Switch;
 public interface SwitchDAO extends CrudRepository<Switch, Integer>,QueryByExampleExecutor<Switch> {
 	
 	List<Switch> findAll();
+	
 }

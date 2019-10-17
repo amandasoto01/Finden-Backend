@@ -25,10 +25,10 @@ public class Plane {
 	private Date dateUpload;
 	
 	@Column(name="version")
-	private int version;
+	private Integer version;
 	
 	@Column(name="state")
-	private int state;
+	private Integer state;
 	
 	@Column(name="observation")
 	private String observation;
@@ -43,10 +43,14 @@ public class Plane {
 	private String dir;
 	
 	@Column(name="Floor_id")
-	private int Floor_id;
+	private Integer Floor_id;
 	
 	@Column(name="Floor_building_id")
-	private int Floor_Building_Id;
+	private Integer Floor_Building_Id;
+
+	public Plane() {
+		
+	}
 
 	public Integer getId() {
 		return id;
@@ -72,19 +76,19 @@ public class Plane {
 		this.dateUpload = dateUpload;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 
-	public int getState() {
+	public Integer getState() {
 		return state;
 	}
 
-	public void setState(int state) {
+	public void setState(Integer state) {
 		this.state = state;
 	}
 
@@ -120,31 +124,29 @@ public class Plane {
 		this.dir = dir;
 	}
 
-	public int getFloor_id() {
+	public Integer getFloor_id() {
 		return Floor_id;
 	}
 
-	public void setFloor_id(int floor_id) {
+	public void setFloor_id(Integer floor_id) {
 		Floor_id = floor_id;
 	}
 
-	public int getFloor_Building_Id() {
+	public Integer getFloor_Building_Id() {
 		return Floor_Building_Id;
 	}
 
-	public void setFloor_Building_Id(int floor_Building_Id) {
+	public void setFloor_Building_Id(Integer floor_Building_Id) {
 		Floor_Building_Id = floor_Building_Id;
-	}
-	public Plane() {
-		
 	}
 
 	@Override
 	public String toString() {
-		return "Plane [id=" + id + ", name=" + name + ", dateUpload=" + dateUpload.toString() + ", version=" + version + ", state="
+		return "Plane [id=" + id + ", name=" + name + ", dateUpload=" + dateUpload + ", version=" + version + ", state="
 				+ state + ", observation=" + observation + ", description=" + description + ", dateApproval="
-				+ dateApproval.toString() + ", dir=" + dir + ", Floor_id=" + Floor_id + ", Floor_Building_Id=" + Floor_Building_Id
+				+ dateApproval + ", dir=" + dir + ", Floor_id=" + Floor_id + ", Floor_Building_Id=" + Floor_Building_Id
 				+ "]";
 	}
+	
 	
 }

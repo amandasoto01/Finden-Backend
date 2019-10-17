@@ -18,6 +18,7 @@ import com.Finden.findenBackEnd.models.entity.*;
 import com.Finden.findenBackEnd.models.service.FacadeContratista;
 import com.Finden.findenBackEnd.models.service.FacadeDTI;
 import com.Finden.findenBackEnd.models.service.FacadeGeneral;
+import com.Finden.findenBackEnd.models.service.FacadeMesaDeServicio;
 import com.sun.mail.handlers.multipart_mixed;
 
 
@@ -34,6 +35,9 @@ public class WebServicesRest {
 	
 	@Autowired
 	private FacadeContratista ContratistaService;
+	
+	@Autowired
+	private FacadeMesaDeServicio mesaDeServicioServices;
 	
 	@PostMapping("/Login")
 	public String login(@RequestBody User usuario) {
@@ -96,9 +100,8 @@ public class WebServicesRest {
 	public String UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
 		return dtiService.UpdatePort(email, updatePort);
 	}
-	@GetMapping("CheckPlane")
+	@GetMapping("/CheckPlane")
 	public String CheckPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
-		//System.out.println("You successfully uploaded " + file.getOriginalFilename() + "!");
 		return ContratistaService.CheckPlane(email,File);
 	}
 	@PostMapping("/AddPlane")
@@ -111,6 +114,19 @@ public class WebServicesRest {
 	public String DeletePlane(@RequestHeader("Email") String email,@RequestBody String NamePlane) {
 		return ContratistaService.DeletePlane(email,NamePlane);
 	}
+	
+	@GetMapping("/FindPort")
+	public SendPort findPort(@RequestHeader("Email") String email,@RequestBody String port) {
+		return mesaDeServicioServices.FindPort(email, port);
+	}
+	
+	@PutMapping("/Approve")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String ApprovePlane(@RequestHeader("Email") String email,@RequestBody ApprovePlane approveplane) {
+		return dtiService.ApprovePlane(email, approveplane);
+	}
+	
+	
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
 	@PostMapping("/holis")
 	public  String plano(@RequestBody MultipartFile file) {

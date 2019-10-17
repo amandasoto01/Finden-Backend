@@ -2,17 +2,27 @@ package com.Finden.findenBackEnd.models.service;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.models.dao.BuildingDAO;
 import com.Finden.findenBackEnd.models.dao.FloorDAO;
+import com.Finden.findenBackEnd.models.dao.PlaneDAO;
 import com.Finden.findenBackEnd.models.dao.PortDAO;
 import com.Finden.findenBackEnd.models.dao.SwitchDAO;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
@@ -39,6 +49,9 @@ public class FacadeDTIImpl implements FacadeDTI{
 	
 	@Autowired
 	private PortDAO  portDAO;
+	
+	@Autowired
+	private PlaneDAO planeDAO;
 	
 	@Override
 	@Transactional
@@ -473,6 +486,112 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 		
 	}
+	//falta resto
+	@Transactional
+	public String ApprovePlane(String email, ApprovePlane approvePlane) {
+		if(Check(email, 1)) {
+			User us = new User();
+			List<User> u= new ArrayList<User>();
+			Iterable<User>Iu;
+			us.setEmail(email);
+			us.setName(null);
+			us.setType(null);
+			us.setPassword(null);
+			Example<User>userExample=Example.of(us);
+			Iu=userDAO.findAll(userExample);
+			for(User usu:Iu) {
+				u.add(usu);
+			}
+			Plane plane,actual;
+			plane= planeDAO.findByName(approvePlane.getNamePlane());
+			if(plane!=null) {
+				if(approvePlane.isStatus()) {
+					actual = new Plane();
+					actual.setState(4);
+					List<Plane> pl= new ArrayList<Plane>();
+					Iterable<Plane>I;
+					Example<Plane>planeExample=Example.of(actual);
+					I=planeDAO.findAll(planeExample);
+					for(Plane planes:I) {
+						pl.add(planes);
+					}
+					if(pl.size()>0) {
+						plane.setState(4);
+						Date date= new Date();
+						plane.setDateApproval(date);
+						StringTokenizer token = new StringTokenizer(plane.getName(),"-");
+						String building=token.nextToken().trim();
+						String number= token.nextToken().trim();
+						String pathNumber;
+						if(number.contains("P")) {
+							pathNumber= "piso "+number.substring(1).trim();
+						}else {
+							pathNumber= "sotano "+number.substring(1).trim();
+						}
+						File dir = new File("C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado");
+						System.out.println("C:/Users/javier/Desktop/planos/"+building+"/"+pathNumber+"/aprobado");
+						String [] NFiles=dir.list();
+						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-"+(NFiles.length+1)+".dxf";
+						pathNumber=plane.getDir();
+						plane.setDir(path);
+						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						try {
+							File file = new File(pathNumber);
+							copyPlane(pathNumber, path);
+							plane.setName(building+"-"+number+"-A-1.dxf");
+							file.delete();
+							pl.get(0).setState(3);
+							planeDAO.save(pl.get(0));
+							planeDAO.save(plane);
+						} catch (IOException e) {
+							System.out.println(e.toString());
+						}
+						return "se aprobo exitosamente el plano";
+					}else {
+						plane.setState(4);
+						Date date= new Date();
+						plane.setDateApproval(date);
+						StringTokenizer token = new StringTokenizer(plane.getName(),"-");
+						String building=token.nextToken().trim();
+						String number= token.nextToken().trim();
+						String pathNumber;
+						if(number.contains("P")) {
+							pathNumber= "piso "+number.substring(1).trim();
+						}else {
+							pathNumber= "sotano "+number.substring(1).trim();
+						}
+						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-1.dxf";
+						pathNumber=plane.getDir();
+						plane.setDir(path);
+						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						try {
+							File file = new File(pathNumber);
+							copyPlane(pathNumber, path);
+							plane.setName(building+"-"+number+"-A-1.dxf");
+							file.delete();
+							planeDAO.save(plane);
+						} catch (IOException e) {
+							System.out.println(e.toString());
+						}
+						return "se aprobo exitosamente el plano";
+					}
+				}else {
+					if(plane.getState()==1) {
+						plane.setState(2);
+						plane.setObservation("El plano a sido rechazado por el usuario: "+u.get(0).getName());
+						planeDAO.save(plane);
+						return "Se rechazo el plano exitosamente";
+					}else {
+						return "Este plano ya a sido aprobado anteriormente";
+					}
+				}
+			}else {
+				return "No existe plano con ese nombre";
+			}
+		}else {
+			return"El usuario no tiene permisos para esto";
+		}
+	}
 	
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
@@ -510,12 +629,23 @@ public class FacadeDTIImpl implements FacadeDTI{
 		return NoProblem;
 	}
 
+	
 	private void CreateFolderBasement(int number, int j) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 		direc.mkdir();
 		CreateFolderApprovedReview("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 	}
 
+    public void copyPlane(String origin, String destination) throws IOException {
+        Path FROM = Paths.get(origin);
+        Path TO = Paths.get(destination);
+        CopyOption[] options = new CopyOption[]{
+          StandardCopyOption.REPLACE_EXISTING,
+          StandardCopyOption.COPY_ATTRIBUTES
+        }; 
+        Files.copy(FROM, TO, options);
+    }
+	
 	private void CreateFolderFloor(int number, int i) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/piso "+i);
 		direc.mkdir();
