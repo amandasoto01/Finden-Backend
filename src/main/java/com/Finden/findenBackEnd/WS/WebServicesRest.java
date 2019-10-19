@@ -1,11 +1,7 @@
 package com.Finden.findenBackEnd.WS;
 
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.Finden.findenBackEnd.ReadAutocadFile;
 import com.Finden.findenBackEnd.models.entity.*;
 import com.Finden.findenBackEnd.models.service.FacadeContratista;
 import com.Finden.findenBackEnd.models.service.FacadeDTI;
 import com.Finden.findenBackEnd.models.service.FacadeGeneral;
 import com.Finden.findenBackEnd.models.service.FacadeMesaDeServicio;
-import com.sun.mail.handlers.multipart_mixed;
 
 
 @CrossOrigin(origins = {"http://localhost:4200"})
@@ -130,46 +124,40 @@ public class WebServicesRest {
 	public File GetPlane(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlane(email, plane);
 	}
-	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
-	@PostMapping("/holis")
-	public  String plano(@RequestBody MultipartFile file) {
-		try {
-			
-			System.out.println("You successfully uploaded " + file.getOriginalFilename() + "!");
-			ArrayList<String> puertos  = ReadAutocadFile.getAutocadFile(convert(file).getAbsolutePath());//se hace la lectura del plano y se guarda en una lista los puertos.
-			//for (int i = 0; i <=puertos.size(); i++) {
-				//System.out.println(puertos.get(i));
-			//}
-			Crear();
-			System.out.println(guardar(file));
-			return "Lectura exitosa";
-        } catch (Exception e) {
-        	System.err.println(e);
-        	return e.toString();
-        	
-        }
-	}
-
-
-	public  File convert(MultipartFile file) throws IOException {
-		File convFile = new File(file.getOriginalFilename());
-		convFile.createNewFile();
-		FileOutputStream fos= new FileOutputStream(convFile);
-		fos.write(file.getBytes());
-		fos.close();
-		return convFile;
+	
+	@GetMapping("/PlanePorts")
+	public ArrayList<PortList> GetPlanePorts(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
+		return dtiService.GetPlanePorts(email, plane);
 	}
 	
-	public void Crear() {
-		File direc= new File("C:/Users/javier/Desktop/planos");
-		direc.mkdir();
-	}
-	public String guardar(MultipartFile f) throws IOException {
-	String ruta="C:/Users/javier/Desktop/planos/"+f.getOriginalFilename();
-	File archivo= new File(ruta);
-	f.transferTo(archivo);
-	return "exito";
+	@PutMapping("/Switches")
+	public String Switches(@RequestHeader("Email") String email,@RequestBody ListPorts listPorts) {
+		return dtiService.Switches(email,listPorts);
 	}
 
+	@GetMapping("/Historial")
+	public ArrayList<HistorialPlane>Historial(@RequestHeader("Email") String email,@RequestBody String plane) {
+		return dtiService.Historial(email, plane);
+	}
+	
+	@GetMapping("/GetApproved")
+	public ArrayList<SendInfoPlane>GetApproved(@RequestHeader("Email") String email,@RequestBody String user) {
+		return dtiService.GetApproved(email, user);
+	}
+	
+	@GetMapping("/GetRejected")
+	public ArrayList<SendInfoPlane>GetRejected(@RequestHeader("Email") String email,@RequestBody String user) {
+		return dtiService.GetRejected(email, user);
+	}
+	
+	@GetMapping("/GetAllPlanes")
+	public ArrayList<SendInfoPlane>GetAllPlanes(@RequestHeader("Email") String email,@RequestBody String user) {
+		return dtiService.GetAllPlanes(email, user);
+	}
+	
+	@GetMapping("/GetUsers")
+	public ArrayList<SendInfoUser>GetUsers(@RequestHeader("Email") String email) {
+		return dtiService.GetUsers(email);
+	}
 }
 

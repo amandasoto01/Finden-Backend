@@ -20,10 +20,10 @@ public class Switch {
 	private Integer index;
 	
 	@Column(name="Writingcenter_id")
-	private int WritingCenter_id;
+	private Integer WritingCenter_id;
 	
 	@Column(name="Numeroswitch")
-	private int NumeroSwitch;
+	private Integer NumeroSwitch;
 
 	public Integer getId() {
 		return id;
@@ -41,19 +41,19 @@ public class Switch {
 		this.index = index;
 	}
 
-	public int getWritingCenter_id() {
+	public Integer getWritingCenter_id() {
 		return WritingCenter_id;
 	}
 
-	public void setWritingCenter_id(int writingCenter_id) {
+	public void setWritingCenter_id(Integer writingCenter_id) {
 		WritingCenter_id = writingCenter_id;
 	}
 
-	public int getNumeroSwitch() {
+	public Integer getNumeroSwitch() {
 		return NumeroSwitch;
 	}
 
-	public void setNumeroSwitch(int numeroSwitch) {
+	public void setNumeroSwitch(Integer numeroSwitch) {
 		NumeroSwitch = numeroSwitch;
 	}
 

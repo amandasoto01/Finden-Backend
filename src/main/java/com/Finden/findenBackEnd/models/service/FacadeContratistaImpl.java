@@ -273,6 +273,7 @@ public class FacadeContratistaImpl implements FacadeContratista {
         int portsVD=0,portsV=0,portsD=0,RportsVD=0,RportsV=0,RportsD=0;
         StringTokenizer token;
         String type,others="";
+        ArrayList<String> namePorts = new ArrayList<>();
         ArrayList<String> puertos = new ArrayList<>();
         Parser parser = ParserBuilder.createDefaultParser();
         parser.parse(filePath, DXFParser.DEFAULT_ENCODING);
@@ -284,21 +285,24 @@ public class FacadeContratistaImpl implements FacadeContratista {
         	token=new StringTokenizer(puertos.get(puertos.size()-1)," ");
         	type=token.nextToken().trim();
     		if(type.contentEquals("VD")) {
-    			if(!(ChecknamePorts(puertos, puertos.get(puertos.size()-1)))) {
-    				portsVD+=1;	
+    			if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(2))) {
+    				namePorts.add(puertos.get(puertos.size()-1).substring(2));
+    				portsVD+=1;
     			}else {
     				RportsVD+=1;
     			}
         	}else if(type.contentEquals("D")) {
-        		if(!(ChecknamePorts(puertos, puertos.get(puertos.size()-1)))) {
-        			portsD+=1;
+        		if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(1))) {
+    				namePorts.add(puertos.get(puertos.size()-1).substring(1));
+    				portsD+=1;
     			}else {
     				RportsD+=1;
     			}
         		
         	}else if(type.contentEquals("V")){
-        		if(!(ChecknamePorts(puertos, puertos.get(puertos.size()-1)))) {
-        			portsV+=1;
+        		if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(1))) {
+    				namePorts.add(puertos.get(puertos.size()-1).substring(1));
+    				portsV+=1;
     			}else {
     				RportsV+=1;
     			}
@@ -306,6 +310,9 @@ public class FacadeContratistaImpl implements FacadeContratista {
         		others+=puertos.get(puertos.size()-1)+"-";
         	}
         }
+        for (String s : namePorts) {
+			System.out.println(s);
+		}
         return "Se encontraron: "+(portsD+portsV+portsVD+RportsD+RportsV+RportsVD)+"Repartidons en:\n"
         		+portsVD+" tipo VD "+RportsVD+" Repetidos del tipo VD\n"
         		+portsV+" tipo V "+RportsV+" Repetidos del tipo V\n"
@@ -314,12 +321,13 @@ public class FacadeContratistaImpl implements FacadeContratista {
     }
 	
 	private boolean ChecknamePorts(ArrayList<String> list,String name) {
+		boolean exist=true;
 		for (int i = 0; i < list.size(); i++) {
-			if(list.get(0).equals(name)) {
-				return true;
+			if(list.get(i).trim().matches(name.trim())) {
+				exist=false;
 			}
 		}
-		return false;
+		return exist;
 	}
 	
 	private void Save(MultipartFile f,String path) throws IOException {

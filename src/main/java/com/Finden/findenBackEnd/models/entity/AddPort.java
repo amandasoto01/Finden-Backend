@@ -1,23 +1,23 @@
 package com.Finden.findenBackEnd.models.entity;
 
 public class AddPort {
-	private int Building;
-	private int Floor;
+	private Integer Building;
+	private Integer Floor;
 	private String Name;
-	private int Switch;
-	private int NPortSwitch;
+	private Integer Switch;
+	private Integer NPortSwitch;
 	private String Type;
 	private String WiringCenter;
-	public int getBuilding() {
+	public Integer getBuilding() {
 		return Building;
 	}
-	public void setBuilding(int building) {
+	public void setBuilding(Integer building) {
 		Building = building;
 	}
 	public Integer getFloor() {
 		return Floor;
 	}
-	public void setFloor(int floor) {
+	public void setFloor(Integer floor) {
 		Floor = floor;
 	}
 	public String getName() {
@@ -26,16 +26,16 @@ public class AddPort {
 	public void setName(String name) {
 		Name = name;
 	}
-	public int getSwitch() {
+	public Integer getSwitch() {
 		return Switch;
 	}
-	public void setSwitch(int switch1) {
+	public void setSwitch(Integer switch1) {
 		Switch = switch1;
 	}
-	public int getNPortSwitch() {
+	public Integer getNPortSwitch() {
 		return NPortSwitch;
 	}
-	public void setNPortSwitch(int nPortSwitch) {
+	public void setNPortSwitch(Integer nPortSwitch) {
 		NPortSwitch = nPortSwitch;
 	}
 	public String getType() {
@@ -50,10 +50,15 @@ public class AddPort {
 	public void setWiringCenter(String wiringCenter) {
 		WiringCenter = wiringCenter;
 	}
+	
+	public AddPort() {
+		
+	}
 	@Override
 	public String toString() {
 		return "AddPort [Building=" + Building + ", Floor=" + Floor + ", Name=" + Name + ", Switch=" + Switch
 				+ ", NPortSwitch=" + NPortSwitch + ", Type=" + Type + ", WiringCenter=" + WiringCenter + "]";
 	}
+	
 
 }

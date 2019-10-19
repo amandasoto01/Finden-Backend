@@ -3,7 +3,6 @@ package com.Finden.findenBackEnd.models.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -11,7 +10,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.Wire;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -30,6 +28,7 @@ import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.WritingCenter;
 import com.google.gson.Gson;
 
+@SuppressWarnings("deprecation")
 @Service
 public class FacadeMesaDeServicioImpl implements FacadeMesaDeServicio{
 
@@ -51,22 +50,26 @@ public class FacadeMesaDeServicioImpl implements FacadeMesaDeServicio{
 		if(Check(email, 1)||Check(email, 2)) {
 			Port findPort= portDAO.findByName(port);
 			if(findPort!=null) {
-				WritingCenter wc= new WritingCenter();
-				wc=wcDAO.findById(findPort.getSwitch_WritingCenter_id()).get();
-				Switch s=new Switch();
-				s=switchDAO.findById(findPort.getSwitch_id()).get();
-				try {
-					System.out.println("puerto en el switch "+findPort.getPortInSwitch());
-					System.out.println("index: "+s.getIndex());
-					GetInfo info=FindHpeIMC(wc.getIdWirtingCenter(),findPort.getPortInSwitch()+s.getIndex());
-					SendPort newPort= new SendPort();
-					newPort.setDescription(info.getIfDescription());
-					newPort.setMac(info.getPhyAddress());
-					newPort.setSpeed(info.getIfspeed().toString());
-					newPort.setState(info.getAdminStatusDesc());
-					return newPort;
-				} catch (IOException e) {
-					System.out.println(e.toString());
+				if(findPort.getPortInSwitch()!=null) {
+					WritingCenter wc= new WritingCenter();
+					wc=wcDAO.findById(findPort.getSwitch_WritingCenter_id()).get();
+					Switch s=new Switch();
+					s=switchDAO.findById(findPort.getSwitch_id()).get();
+					try {
+						System.out.println("puerto en el switch "+findPort.getPortInSwitch());
+						System.out.println("index: "+s.getIndex());
+						GetInfo info=FindHpeIMC(wc.getIdWirtingCenter(),findPort.getPortInSwitch()+s.getIndex()-1);
+						SendPort newPort= new SendPort();
+						newPort.setDescription(info.getIfDescription());
+						newPort.setMac(info.getPhyAddress());
+						newPort.setSpeed(info.getIfspeed().toString());
+						newPort.setState(info.getAdminStatusDesc());
+						return newPort;
+					} catch (IOException e) {
+						System.out.println(e.toString());
+						return null;
+					}
+				}else {
 					return null;
 				}
 			}else {
@@ -103,7 +106,8 @@ public class FacadeMesaDeServicioImpl implements FacadeMesaDeServicio{
 	}
 	
 	private GetInfo FindHpeIMC(int wc,int port) throws ClientProtocolException, IOException {
-        DefaultHttpClient client = new DefaultHttpClient();
+        @SuppressWarnings("resource")
+		DefaultHttpClient client = new DefaultHttpClient();
         client.getCredentialsProvider().setCredentials(
             new AuthScope("10.26.1.103", 8080, "iMC RESTful Web Services"),
             new UsernamePasswordCredentials("puj_finden", "javeriana2019*"));

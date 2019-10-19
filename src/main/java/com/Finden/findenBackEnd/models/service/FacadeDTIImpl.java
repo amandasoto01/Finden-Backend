@@ -14,15 +14,22 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.kabeja.dxf.DXFConstants;
+import org.kabeja.dxf.DXFDocument;
+import org.kabeja.dxf.DXFText;
+import org.kabeja.parser.DXFParser;
+import org.kabeja.parser.ParseException;
+import org.kabeja.parser.Parser;
+import org.kabeja.parser.ParserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.models.dao.BuildingDAO;
 import com.Finden.findenBackEnd.models.dao.FloorDAO;
 import com.Finden.findenBackEnd.models.dao.PlaneDAO;
+import com.Finden.findenBackEnd.models.dao.PlaneXUserDAO;
 import com.Finden.findenBackEnd.models.dao.PortDAO;
 import com.Finden.findenBackEnd.models.dao.SwitchDAO;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
@@ -52,6 +59,9 @@ public class FacadeDTIImpl implements FacadeDTI{
 	
 	@Autowired
 	private PlaneDAO planeDAO;
+	
+	@Autowired
+	private PlaneXUserDAO pxuDAO;
 	
 	@Override
 	@Transactional
@@ -292,8 +302,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 	public String CreatePort(String correo, AddPort add) {
 		if(Check(correo, 1)) {
 			if(checkBuildingsFloor(add.getBuilding(), add.getFloor())) {
-				if(CheckWiringCenterSwitch(add.getWiringCenter(),add.getSwitch())) {
-					if(CheckNamePort(add.getType())!=0) {
 						Port port= new Port();
 						port.setName(add.getName());
 						port.setType(CheckNamePort(add.getType()));
@@ -326,26 +334,30 @@ public class FacadeDTIImpl implements FacadeDTI{
 							Switch s = new Switch();
 							List<Switch> u= new ArrayList<Switch>();
 							Iterable<Switch>SI;
-							s.setWritingCenter_id(Wc.getId());
-							s.setNumeroSwitch(add.getSwitch());
-							s.setIndex(null);
-							s.setId(null);
-							Example<Switch>switchExample=Example.of(s);
-							SI=switchDAO.findAll(switchExample);
-							for(Switch swit:SI) {
-								u.add(swit);
+							if(Wc!=null) {
+								s.setWritingCenter_id(Wc.getId());
+								
+							}else {
+							s.setWritingCenter_id(null);	
 							}
-							port.setSwitch_id(u.get(0).getId());
-							port.setSwitch_WritingCenter_id(u.get(0).getWritingCenter_id());
+							if(add.getSwitch()!=null) {
+								s.setNumeroSwitch(add.getSwitch());
+								s.setIndex(null);
+								s.setId(null);
+								Example<Switch>switchExample=Example.of(s);
+								SI=switchDAO.findAll(switchExample);
+								for(Switch swit:SI) {
+									u.add(swit);
+								}
+								port.setSwitch_id(u.get(0).getId());
+								port.setSwitch_WritingCenter_id(u.get(0).getWritingCenter_id());
+							}else {
+								port.setSwitch_id(null);
+								port.setSwitch_WritingCenter_id(null);
+							}
+							System.out.println(port);
 							portDAO.save(port);
-						return "Puerto Creado con exito";	
-					}else {
-						return "El tipo del puerto esta mal escrito";
-					}
-				}else {
-					return"El switch o el centro de cableado no existe";
-				}
-				
+						return "Puerto Creado con exito";			
 			}else {
 				return "El edificio o el piso no existe";
 			}
@@ -616,6 +628,344 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 	}
 	
+	public ArrayList<PortList> GetPlanePorts(String email,GetPlane plane) {
+		ArrayList<PortList> ports = new ArrayList<>();
+		if(Check(email, 1)) {
+			if(plane.getVersion()!=null) {
+				Plane plane2;
+				plane2 = new Plane();
+				plane2.setName(plane.getNamePlane());
+				plane2.setVersion(plane.getVersion());
+				List<Plane> pl= new ArrayList<Plane>();
+				Iterable<Plane>I;
+				Example<Plane>planeExample=Example.of(plane2);
+				I=planeDAO.findAll(planeExample);
+				for(Plane planes:I) {
+					pl.add(planes);
+				}
+				if(pl.size()>0) {
+					ArrayList<PortList> namePorts = new ArrayList<>();
+					try {
+						namePorts=GetNumberPorts(pl.get(0).getDir());
+						Port p;
+						AddPort ap;
+						WritingCenter wc;
+						PortList portl;
+						StringTokenizer token = new StringTokenizer(plane.getNamePlane(),"-");
+						String building=token.nextToken().trim();
+						String wrc; 
+						token = new StringTokenizer(token.nextToken(),".dxf");
+						String number= token.nextToken().trim();
+						for (PortList namePort : namePorts) {
+							token= new StringTokenizer(namePort.getPort(),"-");
+							wrc=token.nextToken().trim();
+							p= new Port();
+							ap= new AddPort();
+							wc= new WritingCenter();
+							portl= new PortList();
+							p=portDAO.findByName(namePort.getPort());
+							if(p==null) {
+								ap.setBuilding(Integer.parseInt(building));
+								if(number.contains("P")) {
+									ap.setFloor(Integer.parseInt(number.substring(1).trim()));
+								}else {
+									ap.setFloor(Integer.parseInt(number.substring(1).trim())*-1);
+								}
+								ap.setName(namePort.getPort());
+								ap.setType(namePort.getWritingCenter());
+								wc=wcDAO.findByName(wrc);
+								if(wc!=null) {
+									ap.setWiringCenter(wrc);
+									portl.setWritingCenter(wrc);
+								}
+								portl.setPort(namePort.getPort());
+								portl.setPortInSwitch(null);
+								portl.setSwitch(null);
+								ap.setNPortSwitch(null);
+								ap.setSwitch(null);
+								ap.setWiringCenter(null);
+								ports.add(portl);
+								this.CreatePort(email, ap);							
+							}else {
+								portl.setPort(p.getName());
+								portl.setPortInSwitch(p.getPortInSwitch());
+								if(p.getSwitch_id()!=null) {
+									portl.setSwitch(switchDAO.findById(p.getSwitch_id()).get().getNumeroSwitch());
+									portl.setWritingCenter(wcDAO.findById(p.getSwitch_WritingCenter_id()).get().getName());
+								}else {
+									portl.setSwitch(null);
+									portl.setWritingCenter(null);
+								}
+								ports.add(portl);
+							}
+							
+						}
+						return ports;
+					} catch (ParseException e) {
+						System.out.println(e.toString());
+						return null;
+					}
+					
+				}else {
+					return null;
+				}
+			}else {
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	
+	@Transactional
+	public String Switches(String email,ListPorts listports) {
+		if(Check(email, 1)) {
+			String res="",aux;
+			for (int i = 0; i < listports.getPorts().size(); i++) {
+				listports.getPorts().get(i).setBuilding(listports.getBuilding());
+				listports.getPorts().get(i).setFloor(listports.getFloor());
+				aux=this.UpdatePort(email, listports.getPorts().get(i));
+				if(!aux.trim().matches("Puerto actualizado con exito")) {
+					res+="Problema en el puerto: "+listports.getPorts().get(i).getPort()+" error: "+aux+"\n";
+				}
+			}
+			if(res.matches("")) {
+				res="Todos los puertos han sido cargados exitosamente";
+			}
+			return res;
+		}else {
+			return "El usuario no tiene permiso para realizar esta acción";
+		}
+	}
+
+	@Transactional
+	public ArrayList<HistorialPlane> Historial(String email,String plane){
+		if(Check(email, 1)||Check(email, 3)) {
+			ArrayList<HistorialPlane>historialPlane= new ArrayList<HistorialPlane>();
+			Plane p= new Plane();
+			p.setId(null);
+			p.setDateApproval(null);
+			p.setDateUpload(null);
+			p.setDescription(null);
+			p.setDir(null);
+			p.setFloor_Building_Id(null);
+			p.setFloor_id(null);
+			p.setName(plane);
+			p.setObservation(null);
+			p.setState(null);
+			p.setVersion(null);
+			List<Plane> planes= new ArrayList<Plane>();
+			Iterable<Plane>I;
+			Example<Plane>planeExample=Example.of(p);
+			I=planeDAO.findAll(planeExample);
+			for(Plane pl:I) {
+				if(pl.getState()==3||pl.getState()==4) {
+					planes.add(pl);
+				}
+			}
+			HistorialPlane hp;
+			for (int j = 0; j < planes.size(); j++) {
+				hp= new HistorialPlane();
+				hp.setDescription(planes.get(j).getDescription());
+				hp.setVersion(planes.get(j).getVersion());
+				historialPlane.add(hp);
+			}
+			return historialPlane;
+		}else {
+			return null;
+		}
+	}
+
+    @Transactional
+    public ArrayList<SendInfoPlane> GetApproved(String email,String user){
+    	if(!Check(email, 2)) {
+    		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
+    		User us = new User();
+    		List<User> u= new ArrayList<User>();
+    		Iterable<User>I;
+    		us.setEmail(user);
+    		us.setName(null);
+    		us.setType(null);
+    		us.setPassword(null);
+    		Example<User>userExample=Example.of(us);
+    		I=userDAO.findAll(userExample);
+    		for(User usu:I) {
+    			u.add(usu);
+    		}
+    		if(u.size()>0) {
+    			List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
+    			PlaneXUser pxu= new PlaneXUser();
+    			pxu.setPlane_Id(null);
+    			pxu.setUser_Id(u.get(0).getId());
+    			Example<PlaneXUser>planexuExample=Example.of(pxu);
+    			Iterable<PlaneXUser>Ipxu;
+    			Ipxu=pxuDAO.findAll(planexuExample);
+    			for(PlaneXUser usu:Ipxu) {
+    				pxuList.add(usu);
+    				System.out.println(usu);
+    			}
+    			if(pxuList.size()>0) {
+    				Plane plane;
+    	    		SendInfoPlane sip;
+    	    		for (int j = 0; j < pxuList.size(); j++) {
+    					plane= new Plane();
+    					sip= new SendInfoPlane();
+    					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
+    					if(plane.getState()==4||plane.getState()==3) {
+    						sip.setStatus(true);
+    						sip.setName(plane.getName());
+    						sip.setDescription(plane.getDescription());
+    						ip.add(sip);
+    					}
+    				}
+    	    		return ip;
+    			}else {
+    				return null;
+    			}
+    		}else {
+    			return null;	
+    		}
+    	}else {
+    		return null;
+    	}
+    }
+	
+    @Transactional
+    public ArrayList<SendInfoPlane> GetRejected(String email,String user){
+    	if(!Check(email, 2)) {
+    		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
+    		User us = new User();
+    		List<User> u= new ArrayList<User>();
+    		Iterable<User>I;
+    		us.setEmail(user);
+    		us.setName(null);
+    		us.setType(null);
+    		us.setPassword(null);
+    		Example<User>userExample=Example.of(us);
+    		I=userDAO.findAll(userExample);
+    		for(User usu:I) {
+    			u.add(usu);
+    		}
+    		if(u.size()>0) {
+    			List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
+    			PlaneXUser pxu= new PlaneXUser();
+    			pxu.setPlane_Id(null);
+    			pxu.setUser_Id(u.get(0).getId());
+    			Example<PlaneXUser>planexuExample=Example.of(pxu);
+    			Iterable<PlaneXUser>Ipxu;
+    			Ipxu=pxuDAO.findAll(planexuExample);
+    			for(PlaneXUser usu:Ipxu) {
+    				pxuList.add(usu);
+    				System.out.println(usu);
+    			}
+    			if(pxuList.size()>0) {
+    				Plane plane;
+    	    		SendInfoPlane sip;
+    	    		for (int j = 0; j < pxuList.size(); j++) {
+    					plane= new Plane();
+    					sip= new SendInfoPlane();
+    					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
+    					if(plane.getState()==2) {
+    						sip.setStatus(false);
+    						sip.setName(plane.getName());
+    						sip.setDescription(plane.getDescription());
+    						ip.add(sip);
+    					}
+    				}
+    	    		return ip;
+    			}else {
+    				return null;
+    			}
+    		}else {
+    			return null;	
+    		}
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
+    public ArrayList<SendInfoPlane> GetAllPlanes(String email,String user){
+    	if(!Check(email, 2)) {
+    		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
+    		User us = new User();
+    		List<User> u= new ArrayList<User>();
+    		Iterable<User>I;
+    		us.setEmail(user);
+    		us.setName(null);
+    		us.setType(null);
+    		us.setPassword(null);
+    		Example<User>userExample=Example.of(us);
+    		I=userDAO.findAll(userExample);
+    		for(User usu:I) {
+    			u.add(usu);
+    		}
+    		if(u.size()>0) {
+    			List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
+    			PlaneXUser pxu= new PlaneXUser();
+    			pxu.setPlane_Id(null);
+    			pxu.setUser_Id(u.get(0).getId());
+    			Example<PlaneXUser>planexuExample=Example.of(pxu);
+    			Iterable<PlaneXUser>Ipxu;
+    			Ipxu=pxuDAO.findAll(planexuExample);
+    			for(PlaneXUser usu:Ipxu) {
+    				pxuList.add(usu);
+    				System.out.println(usu);
+    			}
+    			if(pxuList.size()>0) {
+    				Plane plane;
+    	    		SendInfoPlane sip;
+    	    		for (int j = 0; j < pxuList.size(); j++) {
+    					plane= new Plane();
+    					sip= new SendInfoPlane();
+    					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
+    					if(plane.getState()==4||plane.getState()==3) {
+    						sip.setStatus(true);
+    					}else if(plane.getState()==2) {
+    						sip.setStatus(false);
+    					}else {
+    						sip.setStatus(null);
+    					}
+    					sip.setName(plane.getName());
+						sip.setDescription(plane.getDescription());
+						ip.add(sip);
+    				}
+    	    		return ip;
+    			}else {
+    				return null;
+    			}
+    		}else {
+    			return null;	
+    		}
+    	}else {
+    		return null;
+    	}
+    }
+    
+    public ArrayList<SendInfoUser>GetUsers(String email){
+    	if(Check(email, 1)) {
+    		ArrayList<SendInfoUser>siu= new ArrayList<SendInfoUser>();
+    		SendInfoUser send;
+    		List<User> u = userDAO.findAll();
+    		for (int i = 0; i < u.size(); i++) {
+				send= new SendInfoUser();
+				send.setEmail(u.get(i).getEmail());
+				send.setName(u.get(i).getName());
+				if(u.get(i).getType()==1) {
+					send.setType("DTI");
+				}else if(u.get(i).getType()==2) {
+					send.setType("mesa de servicios");
+				}else {
+					send.setType("contratista");
+				}
+				siu.add(send);
+			}
+    		return siu;
+    	}else {
+    		return null;
+    	}
+    }
+    
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
 		Building b= new Building();
@@ -658,7 +1008,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 		CreateFolderApprovedReview("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 	}
 
-    public void copyPlane(String origin, String destination) throws IOException {
+    private void copyPlane(String origin, String destination) throws IOException {
         Path FROM = Paths.get(origin);
         Path TO = Paths.get(destination);
         CopyOption[] options = new CopyOption[]{
@@ -711,32 +1061,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 	}
 	
-	private boolean CheckWiringCenterSwitch(String wc, int switches) {
-		WritingCenter Wc= wcDAO.findByName(wc);
-
-		if(Wc!=null) {
-			Switch s = new Switch();
-			List<Switch> u= new ArrayList<Switch>();
-			Iterable<Switch>SI;
-			s.setWritingCenter_id(Wc.getId());
-			s.setNumeroSwitch(switches);
-			s.setIndex(null);
-			s.setId(null);
-			Example<Switch>switchExample=Example.of(s);
-			SI=switchDAO.findAll(switchExample);
-			for(Switch swit:SI) {
-				u.add(swit);
-			}
-			if(u.size()>0) {
-			return true;
-			}else {
-				return false;
-			}
-		}else {
-			return false;
-		}
-	}
-	
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -781,7 +1105,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 	}
 	
-	public boolean Verificar(User usuario) {
+	private boolean Verificar(User usuario) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
 		Iterable<User>I;
@@ -800,5 +1124,58 @@ public class FacadeDTIImpl implements FacadeDTI{
 			return false;
 		}
 
+	private ArrayList<PortList> GetNumberPorts(String filePath) throws ParseException {
+        StringTokenizer token;
+        String type;
+        ArrayList<String> namePorts = new ArrayList<>();
+        ArrayList<PortList>ports= new ArrayList<PortList>();
+        ArrayList<String> puertos = new ArrayList<>();
+        PortList p;
+        Parser parser = ParserBuilder.createDefaultParser();
+        parser.parse(filePath, DXFParser.DEFAULT_ENCODING);
+        DXFDocument doc = parser.getDocument();
+        @SuppressWarnings("unchecked")
+		List<DXFText> lst = doc.getDXFLayer("PUERTOS").getDXFEntities(DXFConstants.ENTITY_TYPE_TEXT);
+        for (int index = 0; index < lst.size(); index++) {
+        	puertos.add(lst.get(index).getText());
+        	token=new StringTokenizer(puertos.get(puertos.size()-1)," ");
+        	type=token.nextToken().trim();
+    		if(type.contentEquals("VD")) {
+    			if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(2))) {
+    				namePorts.add(puertos.get(puertos.size()-1).substring(2).trim());
+    				p= new PortList();
+    				p.setPort(puertos.get(puertos.size()-1).substring(2).trim());
+    				p.setWritingCenter("VD");
+    				ports.add(p);
+    			}
+        	}else if(type.contentEquals("D")) {
+        		if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(1))) {
+        			namePorts.add(puertos.get(puertos.size()-1).substring(1).trim());
+        			p= new PortList();
+    				p.setPort(puertos.get(puertos.size()-1).substring(2).trim());
+    				p.setWritingCenter("D");
+    				ports.add(p);
+        		}
+        	}else if(type.contentEquals("V")){
+        		if(ChecknamePorts(namePorts, puertos.get(puertos.size()-1).substring(1))) {
+        			namePorts.add(puertos.get(puertos.size()-1).substring(1).trim());
+        			p= new PortList();
+    				p.setPort(puertos.get(puertos.size()-1).substring(2).trim());
+    				p.setWritingCenter("V");
+    				ports.add(p);
+        		}
+        	}
+        }
+        return ports;
+    }
 
+	private boolean ChecknamePorts(ArrayList<String> list,String name) {
+		boolean exist=true;
+		for (int i = 0; i < list.size(); i++) {
+			if(list.get(i).trim().matches(name.trim())) {
+				exist=false;
+			}
+		}
+		return exist;
+	}
 }

@@ -42,11 +42,11 @@ public class PlaneXUser {
 		User_Id = user_Id;
 	}
 
-	public int getPlane_Id() {
+	public Integer getPlane_Id() {
 		return Plane_Id;
 	}
 
-	public void setPlane_Id(int plane_Id) {
+	public void setPlane_Id(Integer plane_Id) {
 		Plane_Id = plane_Id;
 	}
 
