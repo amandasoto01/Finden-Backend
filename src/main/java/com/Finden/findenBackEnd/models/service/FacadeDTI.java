@@ -1,11 +1,14 @@
 package com.Finden.findenBackEnd.models.service;
 
+import java.io.File;
+
 import com.Finden.findenBackEnd.models.entity.AddBuilding;
 import com.Finden.findenBackEnd.models.entity.AddPort;
 import com.Finden.findenBackEnd.models.entity.Addwritingcenter;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.UpdatePort;
 import com.Finden.findenBackEnd.models.entity.ApprovePlane;
+import com.Finden.findenBackEnd.models.entity.GetPlane;
 
 
 public interface FacadeDTI {
@@ -27,5 +30,7 @@ public interface FacadeDTI {
 	public String UpdatePort(String email,UpdatePort updatePort);
 	
 	public String ApprovePlane(String email,ApprovePlane approvePlane);
+	
+	public File GetPlane(String email,GetPlane plane);
 
 }

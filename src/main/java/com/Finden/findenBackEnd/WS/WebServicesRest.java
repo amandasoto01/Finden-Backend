@@ -126,7 +126,10 @@ public class WebServicesRest {
 		return dtiService.ApprovePlane(email, approveplane);
 	}
 	
-	
+	@GetMapping("/GetPlane")
+	public File GetPlane(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
+		return dtiService.GetPlane(email, plane);
+	}
 	// Esto para abajo es la lectura del plano no queda asi es solo pruebas
 	@PostMapping("/holis")
 	public  String plano(@RequestBody MultipartFile file) {

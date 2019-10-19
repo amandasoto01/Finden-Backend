@@ -157,34 +157,39 @@ public class FacadeContratistaImpl implements FacadeContratista {
 	@Transactional
 	public String DeletePlane(String Email, String NamePlane) {
 		if(Check(Email, 1)||Check(Email, 3)) {
-			Plane plane= new Plane();
+			Plane plane;
 			plane=planeDAO.findByName(NamePlane);
-			if(plane.getId()!=null && (plane.getState()==1||plane.getState()==2)) {
-				List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
-				PlaneXUser pxu= new PlaneXUser();
-				pxu.setPlane_Id(plane.getId());
-				pxu.setUser_Id(null);
-				System.out.println(pxu.toString());
-				Example<PlaneXUser>userExample=Example.of(pxu);
-				Iterable<PlaneXUser>I;
-				I=pxuDAO.findAll(userExample);
-				for(PlaneXUser usu:I) {
-					pxuList.add(usu);
-				}
-				if(pxuList.size()>0) {
-					pxuDAO.delete(pxuList.get(0));
-					File file= new File(plane.getDir());
-					if(file.delete()) {
-						planeDAO.delete(plane);
-						return "El plano se elimino exitosamente";	
+			if(plane!=null) {
+				if((plane.getState()==1||plane.getState()==2)) {
+					List<PlaneXUser>pxuList = new ArrayList<PlaneXUser>();
+					PlaneXUser pxu= new PlaneXUser();
+					pxu.setPlane_Id(plane.getId());
+					pxu.setUser_Id(null);
+					System.out.println(pxu.toString());
+					Example<PlaneXUser>userExample=Example.of(pxu);
+					Iterable<PlaneXUser>I;
+					I=pxuDAO.findAll(userExample);
+					for(PlaneXUser usu:I) {
+						pxuList.add(usu);
+					}
+					if(pxuList.size()>0) {
+						pxuDAO.delete(pxuList.get(0));
+						File file= new File(plane.getDir());
+						if(file.delete()) {
+							planeDAO.delete(plane);
+							return "El plano se elimino exitosamente";	
+						}else {
+							return "Problema inesperado por favor comuniquese con la DTI javeriana";	
+						}
 					}else {
-						return "Problema inesperado por favor comuniquese con la DTI javeriana";	
+						return "Problema inesperado por favor comuniquese con la DTI javeriana";
 					}
 				}else {
-					return "Problema inesperado por favor comuniquese con la DTI javeriana";
+					return "El plano no puede ser eliminado";
 				}
+				
 			}else {
-				return"El plano no existe o no puede ser eliminado";
+				return"El plano no existe";
 			}
 		}else {
 			return "El usuario no tiene los permisos necesarios";

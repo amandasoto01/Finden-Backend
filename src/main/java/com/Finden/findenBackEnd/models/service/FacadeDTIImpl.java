@@ -486,7 +486,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 		
 	}
-	//falta resto
+
 	@Transactional
 	public String ApprovePlane(String email, ApprovePlane approvePlane) {
 		if(Check(email, 1)) {
@@ -506,8 +506,18 @@ public class FacadeDTIImpl implements FacadeDTI{
 			plane= planeDAO.findByName(approvePlane.getNamePlane());
 			if(plane!=null) {
 				if(approvePlane.isStatus()) {
+					StringTokenizer token = new StringTokenizer(plane.getName(),"-");
+					String building=token.nextToken().trim();
+					String number= token.nextToken().trim();
+					String pathNumber;
+					if(number.contains("P")) {
+						pathNumber= "piso "+number.substring(1).trim();
+					}else {
+						pathNumber= "sotano "+number.substring(1).trim();
+					}
 					actual = new Plane();
 					actual.setState(4);
+					actual.setName(building+"-"+number+".dxf");
 					List<Plane> pl= new ArrayList<Plane>();
 					Iterable<Plane>I;
 					Example<Plane>planeExample=Example.of(actual);
@@ -519,26 +529,17 @@ public class FacadeDTIImpl implements FacadeDTI{
 						plane.setState(4);
 						Date date= new Date();
 						plane.setDateApproval(date);
-						StringTokenizer token = new StringTokenizer(plane.getName(),"-");
-						String building=token.nextToken().trim();
-						String number= token.nextToken().trim();
-						String pathNumber;
-						if(number.contains("P")) {
-							pathNumber= "piso "+number.substring(1).trim();
-						}else {
-							pathNumber= "sotano "+number.substring(1).trim();
-						}
 						File dir = new File("C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado");
-						System.out.println("C:/Users/javier/Desktop/planos/"+building+"/"+pathNumber+"/aprobado");
 						String [] NFiles=dir.list();
 						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-"+(NFiles.length+1)+".dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
 						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						plane.setVersion(NFiles.length+1);
 						try {
 							File file = new File(pathNumber);
 							copyPlane(pathNumber, path);
-							plane.setName(building+"-"+number+"-A-1.dxf");
+							plane.setName(building+"-"+number+".dxf");
 							file.delete();
 							pl.get(0).setState(3);
 							planeDAO.save(pl.get(0));
@@ -551,23 +552,15 @@ public class FacadeDTIImpl implements FacadeDTI{
 						plane.setState(4);
 						Date date= new Date();
 						plane.setDateApproval(date);
-						StringTokenizer token = new StringTokenizer(plane.getName(),"-");
-						String building=token.nextToken().trim();
-						String number= token.nextToken().trim();
-						String pathNumber;
-						if(number.contains("P")) {
-							pathNumber= "piso "+number.substring(1).trim();
-						}else {
-							pathNumber= "sotano "+number.substring(1).trim();
-						}
 						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-1.dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
 						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						plane.setVersion(1);
 						try {
 							File file = new File(pathNumber);
 							copyPlane(pathNumber, path);
-							plane.setName(building+"-"+number+"-A-1.dxf");
+							plane.setName(building+"-"+number+".dxf");
 							file.delete();
 							planeDAO.save(plane);
 						} catch (IOException e) {
@@ -590,6 +583,36 @@ public class FacadeDTIImpl implements FacadeDTI{
 			}
 		}else {
 			return"El usuario no tiene permisos para esto";
+		}
+	}
+	
+	@Transactional
+	public File GetPlane(String email,GetPlane plane) {
+		if(Check(email, 1)||Check(email, 3)) {
+			if(plane.getVersion()!=null) {
+				Plane plane2;
+				plane2 = new Plane();
+				plane2.setName(plane.getNamePlane());
+				plane2.setVersion(plane.getVersion());
+				List<Plane> pl= new ArrayList<Plane>();
+				Iterable<Plane>I;
+				Example<Plane>planeExample=Example.of(plane2);
+				I=planeDAO.findAll(planeExample);
+				for(Plane planes:I) {
+					pl.add(planes);
+				}
+				if(pl.size()>0) {
+					File file = new File(pl.get(0).getDir());
+					return file;
+				}else {
+					return null;
+				}
+			}else {
+				return null;
+			}
+			
+		}else {
+			return null;
 		}
 	}
 	
@@ -629,7 +652,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 		return NoProblem;
 	}
 
-	
 	private void CreateFolderBasement(int number, int j) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 		direc.mkdir();
