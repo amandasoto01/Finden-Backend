@@ -616,6 +616,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 				if(pl.size()>0) {
 					File file = new File(pl.get(0).getDir());
 					return file;
+					
 				}else {
 					return null;
 				}
@@ -966,6 +967,25 @@ public class FacadeDTIImpl implements FacadeDTI{
     	}
     }
     
+    @Transactional
+    public ArrayList<SendInfoBuildng>GetBuildings(String email){
+    	if(Check(email, 1)) {
+    		ArrayList<SendInfoBuildng>sib= new ArrayList<SendInfoBuildng>();
+    		SendInfoBuildng send;
+    		List<Building> bu = buildingDAO.findAll();
+    		for (int i = 0; i < bu.size(); i++) {
+				send= new SendInfoBuildng();
+				send.setName(bu.get(i).getName());
+				send.setNumber(bu.get(i).getNumber());
+				sib.add(send);
+			}
+    		return sib;
+    	}else {
+    		return null;
+    	}
+    }
+    
+    
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
 		Building b= new Building();
@@ -1178,4 +1198,5 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 		return exist;
 	}
+	
 }

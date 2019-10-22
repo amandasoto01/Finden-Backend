@@ -33,131 +33,135 @@ public class WebServicesRest {
 	@Autowired
 	private FacadeMesaDeServicio mesaDeServicioServices;
 	
-	@PostMapping("/Login")
+	@PostMapping("/login")
 	public String login(@RequestBody User usuario) {
 		return generalService.Login(usuario);
 	}
 	
-	@PostMapping("/Enviar")
+	@PostMapping("/send")
 	public String Send(@RequestBody String correo) {
 		return generalService.Enviar(correo);
 	}
 		
-	@PostMapping("/Contrasena")
+	@PostMapping("/password")
 	public String Correction(@RequestBody Correction nuevo) {
 		return generalService.Correguir(nuevo);
 	}
 	
-	@PostMapping("/Create")
+	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.Create(usuario, email);
 	}
 	
-	@PutMapping("/UpdateUser")
+	@PutMapping("/updateUser")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.UpdateUser(usuario, email);
 	}
 
-	@DeleteMapping("/DeleteUser")
+	@DeleteMapping("/deleteUser")
 	@ResponseStatus
 	public String DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
 		return dtiService.Delete(correo, email);
 	}
 	
-	@PostMapping("/AddBuilding")
+	@PostMapping("/addBuilding")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
 		return dtiService.CreateBuilding(email,add);
 	}
-	@PostMapping("/AddWiringCenter")
+	@PostMapping("/addWiringCenter")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
 		return dtiService.CreateWiringCenter(email,add);
 	}
 	
-	@PostMapping("/AddPuerto")
+	@PostMapping("/addPort")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
 		return dtiService.CreatePort(email,add);
 	}
 	
-	@DeleteMapping("/DeletePuerto")
+	@DeleteMapping("/deletePort")
 	@ResponseStatus
 	public String DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return dtiService.DeletePort(port, email);
 	}
 	
-	@PutMapping("/UpdatePuerto")
+	@PutMapping("/updatePort")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
 		return dtiService.UpdatePort(email, updatePort);
 	}
-	@GetMapping("/CheckPlane")
+	@GetMapping("/checkPlane")
 	public String CheckPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
 		return ContratistaService.CheckPlane(email,File);
 	}
-	@PostMapping("/AddPlane")
+	@PostMapping("/addPlane")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File, String Description) {
 		return ContratistaService.AddPLane(email, File,Description); 
 	}
-	@DeleteMapping("/DeletePlane")
+	@DeleteMapping("/deletePlane")
 	@ResponseStatus
 	public String DeletePlane(@RequestHeader("Email") String email,@RequestBody String NamePlane) {
 		return ContratistaService.DeletePlane(email,NamePlane);
 	}
 	
-	@GetMapping("/FindPort")
+	@GetMapping("/findPort")
 	public SendPort findPort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return mesaDeServicioServices.FindPort(email, port);
 	}
 	
-	@PutMapping("/Approve")
+	@PutMapping("/approve")
 	@ResponseStatus(HttpStatus.CREATED)
 	public String ApprovePlane(@RequestHeader("Email") String email,@RequestBody ApprovePlane approveplane) {
 		return dtiService.ApprovePlane(email, approveplane);
 	}
-	
-	@GetMapping("/GetPlane")
+	@GetMapping("/getPlane")
 	public File GetPlane(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlane(email, plane);
 	}
 	
-	@GetMapping("/PlanePorts")
+	@GetMapping("/planePorts")
 	public ArrayList<PortList> GetPlanePorts(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlanePorts(email, plane);
 	}
 	
-	@PutMapping("/Switches")
+	@PutMapping("/switches")
 	public String Switches(@RequestHeader("Email") String email,@RequestBody ListPorts listPorts) {
 		return dtiService.Switches(email,listPorts);
 	}
 
-	@GetMapping("/Historial")
+	@GetMapping("/history")
 	public ArrayList<HistorialPlane>Historial(@RequestHeader("Email") String email,@RequestBody String plane) {
 		return dtiService.Historial(email, plane);
 	}
 	
-	@GetMapping("/GetApproved")
+	@GetMapping("/getApprovedPlanes")
 	public ArrayList<SendInfoPlane>GetApproved(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetApproved(email, user);
 	}
 	
-	@GetMapping("/GetRejected")
+	@GetMapping("/getRejectedPlanes")
 	public ArrayList<SendInfoPlane>GetRejected(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetRejected(email, user);
 	}
 	
-	@GetMapping("/GetAllPlanes")
+	@GetMapping("/getAllPlanes")
 	public ArrayList<SendInfoPlane>GetAllPlanes(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetAllPlanes(email, user);
 	}
 	
-	@GetMapping("/GetUsers")
+	@GetMapping("/getUsers")
 	public ArrayList<SendInfoUser>GetUsers(@RequestHeader("Email") String email) {
 		return dtiService.GetUsers(email);
+	}
+	
+	@GetMapping("/getBuildings")
+	public ArrayList<SendInfoBuildng>GetBuildings(@RequestHeader("Email") String email) {
+		return dtiService.GetBuildings(email);
 	}
 }
 

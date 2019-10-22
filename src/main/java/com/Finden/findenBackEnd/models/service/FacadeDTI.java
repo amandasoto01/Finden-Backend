@@ -3,6 +3,7 @@ package com.Finden.findenBackEnd.models.service;
 import java.io.File;
 import java.util.ArrayList;
 
+
 import com.Finden.findenBackEnd.models.entity.AddBuilding;
 import com.Finden.findenBackEnd.models.entity.AddPort;
 import com.Finden.findenBackEnd.models.entity.Addwritingcenter;
@@ -13,6 +14,7 @@ import com.Finden.findenBackEnd.models.entity.GetPlane;
 import com.Finden.findenBackEnd.models.entity.HistorialPlane;
 import com.Finden.findenBackEnd.models.entity.ListPorts;
 import com.Finden.findenBackEnd.models.entity.PortList;
+import com.Finden.findenBackEnd.models.entity.SendInfoBuildng;
 import com.Finden.findenBackEnd.models.entity.SendInfoPlane;
 import com.Finden.findenBackEnd.models.entity.SendInfoUser;
 
@@ -37,7 +39,10 @@ public interface FacadeDTI {
 	
 	public String ApprovePlane(String email,ApprovePlane approvePlane);
 	
-	 public ArrayList<SendInfoUser>GetUsers(String email);
+	public ArrayList<SendInfoUser>GetUsers(String email);
+	
+	public ArrayList<SendInfoBuildng>GetBuildings(String email);
+	
 	public File GetPlane(String email,GetPlane plane);
 	
 	public ArrayList<PortList> GetPlanePorts(String email,GetPlane plane);
