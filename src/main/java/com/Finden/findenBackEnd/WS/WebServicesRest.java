@@ -34,58 +34,58 @@ public class WebServicesRest {
 	private FacadeMesaDeServicio mesaDeServicioServices;
 	
 	@PostMapping("/login")
-	public String login(@RequestBody User usuario) {
-		return generalService.Login(usuario);
+	public Request login(@RequestBody User user) {
+		return generalService.Login(user);
 	}
 	
 	@PostMapping("/send")
-	public String Send(@RequestBody String correo) {
-		return generalService.Enviar(correo);
+	public Request Send(@RequestBody User user) {
+		return generalService.Enviar(user);
 	}
 		
 	@PostMapping("/password")
-	public String Correction(@RequestBody Correction nuevo) {
+	public Request Correction(@RequestBody Correction nuevo) {
 		return generalService.Correguir(nuevo);
 	}
 	
 	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
+	public Request CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.Create(usuario, email);
 	}
-	
-	@PutMapping("/updateUser")
+	@PostMapping("/updateUser")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
+	public Request UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.UpdateUser(usuario, email);
 	}
 
-	@DeleteMapping("/deleteUser")
-	@ResponseStatus
-	public String DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
+	@PostMapping("/deleteUser")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
 		return dtiService.Delete(correo, email);
 	}
 	
 	@PostMapping("/addBuilding")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
+	public Request CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
 		return dtiService.CreateBuilding(email,add);
 	}
 	@PostMapping("/addWiringCenter")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
+	public Request CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
+		System.out.println(add.getSwitches().toString());
 		return dtiService.CreateWiringCenter(email,add);
 	}
 	
 	@PostMapping("/addPort")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
+	public Request CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
 		return dtiService.CreatePort(email,add);
 	}
 	
-	@DeleteMapping("/deletePort")
-	@ResponseStatus
-	public String DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
+	@PostMapping("/deletePort")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return dtiService.DeletePort(port, email);
 	}
 	
@@ -162,6 +162,36 @@ public class WebServicesRest {
 	@GetMapping("/getBuildings")
 	public ArrayList<SendInfoBuildng>GetBuildings(@RequestHeader("Email") String email) {
 		return dtiService.GetBuildings(email);
+	}
+	
+	@PostMapping("/getFloors")
+	public ArrayList<Integer>GetFloors(@RequestHeader("Email") String email,@RequestBody String building) {
+		return dtiService.GetFloors(email,building);
+	}
+	
+	@PostMapping("/getUser")
+	@ResponseStatus(HttpStatus.CREATED)
+	public User GetUser(@RequestHeader("Email") String email,@RequestBody String user) {
+		return dtiService.GetUser(email,user);
+	}
+	
+	@GetMapping("/getWiringCenter")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<String> GetWritingCenter(@RequestHeader("Email") String email) {
+		return dtiService.GetWritingCenter(email);
+	}
+	
+	@PostMapping("/getSwitches")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<Integer> getSwitches(@RequestHeader("Email") String email,@RequestBody String Wc) {
+		return dtiService.getSwitches(email,Wc);
+	}
+	
+	//cambiar por addPort 
+	@PostMapping("/getPort")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Port getPort(@RequestHeader("Email") String email,@RequestBody String port) {
+		return dtiService.getPort(email,port);
 	}
 }
 

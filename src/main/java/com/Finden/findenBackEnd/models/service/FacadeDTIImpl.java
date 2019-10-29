@@ -65,43 +65,63 @@ public class FacadeDTIImpl implements FacadeDTI{
 	
 	@Override
 	@Transactional
-	public String Create(User usuario, String email) {
+	public Request Create(User usuario, String email) {
+		Request res= new Request();
 		if(Check(email, 1)) {
 			if(usuario.getEmail()==null) {
-				return "No se ingreso email";
+				res.setRequest(false);
+				res.setRes("No se ingreso email");
+				return res;
 			}else if (usuario.getName()==null) {
-				return "No se ingreso nombre";
+				res.setRequest(false);
+				res.setRes("No se ingreso nombre");
+				return res;
 			}else if(usuario.getPassword()==null) {
-				return "No se ingreso contraseña";
+				res.setRequest(false);
+				res.setRes("No se ingreso contraseña");
+				return res;
 			}else if(usuario.getType()==null) {
-				return "No se ingreso Correo";
+				res.setRequest(false);
+				res.setRes("No se ingreso Correo");
+				return res;
 			}else {
 				usuario.setId(null);
 				usuario.setPassword(DigestUtils.sha1Hex(usuario.getPassword()));
 				if(Verificar(usuario)) {
 					try {
 						userDAO.save(usuario);
-						return "Usuario creado exitosamente";
+						res.setRequest(true);
+						res.setRes("Usuario creado exitosamente");
+						return res;
 					} catch (Exception e) {
-						return e.toString();
+						res.setRequest(false);
+						res.setRes(e.toString());
+						return res;
 					}
 				}else {
-					return "el usuario ya exite";
+					res.setRequest(false);
+					res.setRes("el usuario ya exite");
+					return res;
 				}
 
 			}
 		}else {
-			return "el usuario no tiene permiso";
+			res.setRequest(false);
+			res.setRes("el usuario no tiene permiso");
+			return res;
 		}
 
 	}
 	
 	@Override
 	@Transactional
-	public String UpdateUser(User usuario, String email) {
+	public Request UpdateUser(User usuario, String email) {
+		Request res = new Request();
 		if(Check(email)) {
 			if(usuario.getEmail()==null) {
-				return"No se enivo correo";
+				res.setRequest(false);
+				res.setRes("No se enivo correo");
+				return res;
 			}else {
 				User us = new User();
 				List<User> u= new ArrayList<User>();
@@ -119,32 +139,42 @@ public class FacadeDTIImpl implements FacadeDTI{
 					if(usuario.getName()==null) {
 						usuario.setName(u.get(0).getName());
 					}
-					if(usuario.getPassword()!=null) {
-						usuario.setPassword(DigestUtils.sha1Hex(usuario.getPassword()));
+					if(usuario.getPassword()==null||usuario.getPassword()==u.get(0).getPassword()) {
+						usuario.setPassword(u.get(0).getPassword());	
 					}else {
-						usuario.setPassword(u.get(0).getPassword());
+						
+						usuario.setPassword(DigestUtils.sha1Hex(usuario.getPassword()));	
 					}
 					if(usuario.getType()==null) {
 						usuario.setType(u.get(0).getType());
 					}
 					usuario.setId(u.get(0).getId());
 					userDAO.save(usuario);
-					return "usuario modificado exitosamente";
+					res.setRequest(false);
+					res.setRes("usuario modificado exitosamente");
+					return res;
 				}else {
-					return"El correo no existe";
+					res.setRequest(false);
+					res.setRes("El correo no existe");
+					return res;
 				}
 			}
 		}else {
-			return "El usuario no tiene permiso";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene permiso");
+			return res;
 		}
 	}
 	
 	@Override
 	@Transactional
-	public String Delete(String correo, String email) {
+	public Request Delete(String correo, String email) {
+		Request res = new Request();
 		if(Check(email, 1)) {
 			if(correo==null) {
-				return"No se enivo email";
+				res.setRequest(false);
+				res.setRes("No se enivo email");
+				return res;
 			}else {
 				User us = new User();
 				List<User> u= new ArrayList<User>();
@@ -160,29 +190,66 @@ public class FacadeDTIImpl implements FacadeDTI{
 				}
 				if(u.size()>0) {
 				userDAO.deleteById(u.get(0).getId());
-				return"Usuario eliminado exitosamente";
+				res.setRequest(true);
+				res.setRes("Usuario eliminado exitosamente");
+				return res;
 				}else {
-					return"el email no se encuentra en el sistema";
+					res.setRequest(false);
+					res.setRes("el email no se encuentra en el sistema");
+					return res;
 				}
 			}
 		}else {
-			return "El usuario no tiene permisos";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene permisos");
+			return res;
 		}
 	}
-
+	
 	@Override
 	@Transactional
-	public String CreateBuilding(String correo, AddBuilding add) {
+	public User GetUser(String email,String user) {
+		User us = new User();
+		List<User> u= new ArrayList<User>();
+		Iterable<User>I;
+		us.setEmail(user);
+		us.setName(null);
+		us.setType(null);
+		us.setPassword(null);
+		Example<User>userExample=Example.of(us);
+		I=userDAO.findAll(userExample);
+		for(User usu:I) {
+			u.add(usu);
+		}
+		if(u.size()>0) {
+		return u.get(0);
+		}else {
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public Request CreateBuilding(String correo, AddBuilding add) {
+		Request res= new Request();
 		boolean problem= false;
 		if(Check(correo, 1)) {
 			if(add.getName()==null) {
-				return "No se a ingresado nombre del edificio";
+				res.setRequest(false);
+				res.setRes("No se a ingresado nombre del edificio");
+				return res;
 			}else if(!(add.getNumber()>=0||add.getNumber()<0)) {
-				return "No se a ingresado el numero del edificio";
+				res.setRequest(false);
+				res.setRes("No se a ingresado el numero del edificio");
+				return res;
 			}else if(!(add.getNBasement()>=0||add.getNBasement()<0)) {
-				return "No se a ingresado el numero de sotanos";
+				res.setRequest(false);
+				res.setRes("No se a ingresado el numero de sotanos");
+				return res;
 			}else if(!(add.getNFloors()>=0||add.getNFloors()<0)) {
-				return "No se a ingresado el numero de pisos";
+				res.setRequest(false);
+				res.setRes("No se a ingresado el numero de pisos");
+				return res;
 			}else {
 				Building building = new Building();
 				building.setName(add.getName());
@@ -213,37 +280,58 @@ public class FacadeDTIImpl implements FacadeDTI{
 									CreateFolderBasement(building.getNumber(),j);
 							}
 							if(!problem) {
-							return"Edificio agregado con exito";
+								res.setRequest(true);
+								res.setRes("Edificio agregado con exito");
+								return res;
 							}else {
-								return "La ruta para guardar los planos de los sotanos tienen problemas";
+								res.setRequest(false);
+								res.setRes("La ruta para guardar los planos de los sotanos tienen problemas");
+								return res;
 							}
 					}else {
-						return "La ruta para guardar los planos del edificio tiene problemas";
+						res.setRequest(false);
+						res.setRes("La ruta para guardar los planos del edificio tiene problemas");
+						return res;
 					}
 					
 				}else {
-					return "El nombre o el numero del edificio ya existe";
+					res.setRequest(false);
+					res.setRes("El nombre o el numero del edificio ya existe");
+					return res;
 				}
 			}
 		}else {
-			return "El usuario no tiene Permisos";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene Permisos");
+			return res;
 		}
 	}
 	
 	@Override
 	@Transactional
-	public String CreateWiringCenter(String correo, Addwritingcenter add) {
+	public Request CreateWiringCenter(String correo, Addwritingcenter add) {
+		Request res= new Request();
 		if(Check(correo, 1)) {
 			if(add.getName()==null) {
-				return "No se ingreso el nombre del centro de cableado";
+				res.setRequest(false);
+				res.setRes("No se ingreso el nombre del centro de cableado");
+				return res;
 			}else if(add.getId()==0) {
-				return "No se ingreso el id del centro de cableado";
+				res.setRequest(false);
+				res.setRes("No se ingreso el id del centro de cableado");
+				return res;
 			}else if(add.getBuilding()==0) {
-				return "No se ingreso el numero del edificio";
+				res.setRequest(false);
+				res.setRes("No se ingreso el numero del edificio");
+				return res;
 			}else if(add.getFloor()==0) {
-				return "No se ingreso el numero del piso";
+				res.setRequest(false);
+				res.setRes("No se ingreso el numero del piso");
+				return res;
 			}else if(add.getSwitches()==null) {
-				return"No se ingresaron los switches del centro de cableado";
+				res.setRequest(false);
+				res.setRes("No se ingresaron los switches del centro de cableado");
+				return res;
 			}else {
 				WritingCenter wc= new WritingCenter();
 				if(checkBuildingsFloor(add.getBuilding(),add.getFloor())) {
@@ -289,17 +377,24 @@ public class FacadeDTIImpl implements FacadeDTI{
 						switchDAO.save(switches);
 						switches= new Switch();
 					}
-					return "Centro de cableado Creado";	
+					res.setRequest(true);
+					res.setRes("Centro de cableado Creado");
+					return res;	
 				}else {
-					return "el edificio o el piso no existe";
+					res.setRequest(false);
+					res.setRes("el edificio o el piso no existe");
+					return res;
 				}
 			}
 		}else {
-			return"El usuario no tiene los persmisos para realizar esta operación";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene los persmisos para realizar esta operación");
+			return res;
 		}
 	}	
 	
-	public String CreatePort(String correo, AddPort add) {
+	public Request CreatePort(String correo, AddPort add) {
+		Request res = new Request();
 		if(Check(correo, 1)) {
 			if(checkBuildingsFloor(add.getBuilding(), add.getFloor())) {
 						Port port= new Port();
@@ -357,34 +452,65 @@ public class FacadeDTIImpl implements FacadeDTI{
 							}
 							System.out.println(port);
 							portDAO.save(port);
-						return "Puerto Creado con exito";			
+							res.setRequest(true);
+							res.setRes("Puerto Creado con exito");
+							return res;
 			}else {
-				return "El edificio o el piso no existe";
+				res.setRequest(false);
+				res.setRes("El edificio o el piso no existe");
+				return res;
 			}
 		}else {
-			return"El usuario no tiene los permisos suficientes";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene los permisos suficientes");
+			return res;
 		}
 	}
 	
-	public String DeletePort(String port, String email) {
+	public Request DeletePort(String port, String email) {
+		Request res= new Request();
 		if(Check(email, 1)) {
-			if(email==null) {
-				return "no se envio el nombre del puerto";
+			if(port==null||port=="") {
+				res.setRequest(false);
+				res.setRes("no se envio el nombre del puerto");
+				return res;
 			}else {
 				Port p=portDAO.findByName(port);
 				if(p==null) {
-					return "El puerto no existe recuerde que el nombre es: tipo “Espacio” nombre del centro de cableado “-” número de identificación del puerto en el patchpanel. ";
+					res.setRequest(false);
+					res.setRes("El puerto no existe recuerde que el nombre del puerto debe ser: nombre del centro de cableado “-” número de identificación del puerto en el patchpanel. ");
+					return res;
 				}else {
 					portDAO.delete(p);
-					return "Puerto eliminado exitosamente";
+					res.setRequest(true);
+					res.setRes("Puerto eliminado exitosamente");
+					return res;
 				}
 				
 			}
 		}else {
-			return "El usuario no tiene permiso para realizar esta acción";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene permiso para realizar esta acción");
+			return res;
 		}
 	}
 	
+	//agregar bien todo los datos
+	@Transactional
+	public Port getPort(String email,String port) {
+		if(Check(email, 1)) {
+			Port p= portDAO.findByName(port);
+			if(p!=null) {
+				return p;
+			}else {
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	
+	@Transactional
 	public String UpdatePort(String email,UpdatePort updatePort) {
 		Port port;
 		Port newPort= new Port();
@@ -803,7 +929,6 @@ public class FacadeDTIImpl implements FacadeDTI{
     			Ipxu=pxuDAO.findAll(planexuExample);
     			for(PlaneXUser usu:Ipxu) {
     				pxuList.add(usu);
-    				System.out.println(usu);
     			}
     			if(pxuList.size()>0) {
     				Plane plane;
@@ -857,7 +982,6 @@ public class FacadeDTIImpl implements FacadeDTI{
     			Ipxu=pxuDAO.findAll(planexuExample);
     			for(PlaneXUser usu:Ipxu) {
     				pxuList.add(usu);
-    				System.out.println(usu);
     			}
     			if(pxuList.size()>0) {
     				Plane plane;
@@ -911,7 +1035,6 @@ public class FacadeDTIImpl implements FacadeDTI{
     			Ipxu=pxuDAO.findAll(planexuExample);
     			for(PlaneXUser usu:Ipxu) {
     				pxuList.add(usu);
-    				System.out.println(usu);
     			}
     			if(pxuList.size()>0) {
     				Plane plane;
@@ -968,6 +1091,48 @@ public class FacadeDTIImpl implements FacadeDTI{
     }
     
     @Transactional
+    public ArrayList<String> GetWritingCenter(String email){
+    	if(Check(email, 1)) {
+    		ArrayList<String> Wcs= new ArrayList<String>();
+    		List<WritingCenter> w = wcDAO.findAll();
+    		for (int i = 0; i < w.size(); i++) {
+				Wcs.add(w.get(i).getName());
+			}
+    		return Wcs;
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
+    public ArrayList<Integer> getSwitches(String email,String Wc){
+    	ArrayList<Integer> sws= new ArrayList<Integer>();
+    	WritingCenter wc= wcDAO.findByName(Wc);
+    	if(wc!=null) {
+    		Switch s= new Switch();
+    		s.setId(null);
+    		s.setIndex(null);
+    		s.setNumeroSwitch(null);
+    		s.setWritingCenter_id(wc.getId());
+    		List<Switch> switches= new ArrayList<Switch>();
+    		Iterable<Switch>I;
+    		Example<Switch>switchExample=Example.of(s);
+    		I=switchDAO.findAll(switchExample);
+    		for(Switch swit:I) {
+    			switches.add(swit);
+    			sws.add(swit.getNumeroSwitch());
+    		}
+    		if(sws.size()==0) {
+    			return null;
+    		}else {
+    			return sws;
+    		}
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
     public ArrayList<SendInfoBuildng>GetBuildings(String email){
     	if(Check(email, 1)) {
     		ArrayList<SendInfoBuildng>sib= new ArrayList<SendInfoBuildng>();
@@ -984,7 +1149,47 @@ public class FacadeDTIImpl implements FacadeDTI{
     		return null;
     	}
     }
-    
+   
+    @Transactional
+    public ArrayList<Integer>GetFloors(String email, String building){
+    	ArrayList<Integer>floors= new ArrayList<Integer>();
+    	if(Check(email, 1)) {
+    		Building b= new Building();
+    		b.setId(null);
+    		b.setName(null);
+    		b.setNumber(Integer.parseInt(building));
+    		List<Building> bu= new ArrayList<Building>();
+    		Iterable<Building>I;
+    		Example<Building>buildingExample=Example.of(b);
+    		I=buildingDAO.findAll(buildingExample);
+    		for(Building build:I) {
+    			bu.add(build);
+    		}
+    		if(bu.size()>0) {
+    			Floor f= new Floor();
+    			f.setBuilding_Id(bu.get(0).getId());
+    			f.setNumber(null);
+    			f.setId(null);
+    			List<Floor> fl= new ArrayList<Floor>();
+    			Iterable<Floor>F;
+    			Example<Floor>floorExample=Example.of(f);
+    			F=floorDAO.findAll(floorExample);
+    			for(Floor floo:F) {
+    				fl.add(floo);
+    				floors.add(floo.getNumber());
+    			}
+    			if(fl.size()>0) {
+    				return floors;
+    			}else {
+    				return null;
+    			}
+    		}else {
+    			return null;
+    		}
+    	}else {
+    		return null;
+    	}
+    }
     
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
