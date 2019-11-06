@@ -2,12 +2,14 @@ package com.Finden.findenBackEnd.models.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Finden.findenBackEnd.models.entity.Request;
+
 public interface FacadeContratista {
 	
-	public String AddPLane(String Email, MultipartFile file,String description);
+	public Request AddPLane(String Emai, MultipartFile file,String description);
 	
-	public String CheckPlane(String Email, MultipartFile file);
+	public Request CheckPlane(String Email, MultipartFile file);
 	
-	public String DeletePlane(String Email,String NamePlane);
+	public Request DeletePlane(String Email,String NamePlane);
 
 }

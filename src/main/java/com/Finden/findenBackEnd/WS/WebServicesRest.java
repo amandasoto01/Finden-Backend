@@ -1,11 +1,12 @@
 package com.Finden.findenBackEnd.WS;
 
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,135 +34,205 @@ public class WebServicesRest {
 	@Autowired
 	private FacadeMesaDeServicio mesaDeServicioServices;
 	
+	
 	@PostMapping("/login")
-	public String login(@RequestBody User usuario) {
-		return generalService.Login(usuario);
+	@CrossOrigin(origins = "*")
+	public Request login(@RequestBody User user) {
+		return generalService.Login(user);
 	}
 	
 	@PostMapping("/send")
-	public String Send(@RequestBody String correo) {
-		return generalService.Enviar(correo);
+	@CrossOrigin(origins = "*")
+	public Request Send(@RequestBody User user) {
+		return generalService.Enviar(user);
 	}
 		
 	@PostMapping("/password")
-	public String Correction(@RequestBody Correction nuevo) {
+	@CrossOrigin(origins = "*")
+	public Request Correction(@RequestBody Correction nuevo) {
 		return generalService.Correguir(nuevo);
 	}
 	
 	@PostMapping("/create")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
+	public Request CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.Create(usuario, email);
 	}
-	
-	@PutMapping("/updateUser")
+	@PostMapping("/updateUser")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
+	public Request UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.UpdateUser(usuario, email);
 	}
 
-	@DeleteMapping("/deleteUser")
-	@ResponseStatus
-	public String DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
+	@PostMapping("/deleteUser")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
 		return dtiService.Delete(correo, email);
 	}
 	
 	@PostMapping("/addBuilding")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
+	public Request CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
 		return dtiService.CreateBuilding(email,add);
 	}
 	@PostMapping("/addWiringCenter")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
+	public Request CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
+		System.out.println(add.getSwitches().toString());
 		return dtiService.CreateWiringCenter(email,add);
 	}
 	
 	@PostMapping("/addPort")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
+	public Request CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
 		return dtiService.CreatePort(email,add);
 	}
 	
-	@DeleteMapping("/deletePort")
-	@ResponseStatus
-	public String DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
+	@PostMapping("/deletePort")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return dtiService.DeletePort(port, email);
 	}
 	
-	@PutMapping("/updatePort")
+	@PostMapping("/updatePort")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
+	public Request UpdatePort(@RequestHeader("Email") String email,@RequestBody UpdatePort updatePort) {
 		return dtiService.UpdatePort(email, updatePort);
 	}
-	@GetMapping("/checkPlane")
-	public String CheckPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
+	@PostMapping("/checkPlane")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request CheckPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File) {
 		return ContratistaService.CheckPlane(email,File);
 	}
 	@PostMapping("/addPlane")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File, String Description) {
+	public Request AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File,@RequestHeader("description")String Description) {
 		return ContratistaService.AddPLane(email, File,Description); 
 	}
-	@DeleteMapping("/deletePlane")
-	@ResponseStatus
-	public String DeletePlane(@RequestHeader("Email") String email,@RequestBody String NamePlane) {
+	@PostMapping("/deletePlane")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Request DeletePlane(@RequestHeader("Email") String email,@RequestBody String NamePlane) {
 		return ContratistaService.DeletePlane(email,NamePlane);
 	}
 	
-	@GetMapping("/findPort")
+	@PostMapping("/findPort")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
 	public SendPort findPort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return mesaDeServicioServices.FindPort(email, port);
 	}
 	
-	@PutMapping("/approve")
+	@PostMapping("/approve")
+	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	public String ApprovePlane(@RequestHeader("Email") String email,@RequestBody ApprovePlane approveplane) {
+	public Request ApprovePlane(@RequestHeader("Email") String email,@RequestBody ApprovePlane approveplane) {
 		return dtiService.ApprovePlane(email, approveplane);
 	}
-	@GetMapping("/getPlane")
-	public File GetPlane(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
+	@PostMapping("/getPlane")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ResponseEntity<Resource> GetPlane(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlane(email, plane);
 	}
 	
 	@GetMapping("/planePorts")
+	@CrossOrigin(origins = "*")
 	public ArrayList<PortList> GetPlanePorts(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlanePorts(email, plane);
 	}
 	
 	@PutMapping("/switches")
+	@CrossOrigin(origins = "*")
 	public String Switches(@RequestHeader("Email") String email,@RequestBody ListPorts listPorts) {
 		return dtiService.Switches(email,listPorts);
 	}
 
 	@GetMapping("/history")
+	@CrossOrigin(origins = "*")
 	public ArrayList<HistorialPlane>Historial(@RequestHeader("Email") String email,@RequestBody String plane) {
 		return dtiService.Historial(email, plane);
 	}
 	
 	@GetMapping("/getApprovedPlanes")
+	@CrossOrigin(origins = "*")
 	public ArrayList<SendInfoPlane>GetApproved(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetApproved(email, user);
 	}
 	
 	@GetMapping("/getRejectedPlanes")
+	@CrossOrigin(origins = "*")
 	public ArrayList<SendInfoPlane>GetRejected(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetRejected(email, user);
 	}
 	
 	@GetMapping("/getAllPlanes")
+	@CrossOrigin(origins = "*")
 	public ArrayList<SendInfoPlane>GetAllPlanes(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetAllPlanes(email, user);
 	}
 	
+	@PostMapping("/getAllPlanesDTI")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<SendInfoPlane>GetAllPlanesDTI(@RequestHeader("Email") String email,@RequestBody SendInfoPlane user) {
+		return dtiService.GetAllPlanesDTI(email, user);
+	}
+	
 	@GetMapping("/getUsers")
+	@CrossOrigin(origins = "*")
 	public ArrayList<SendInfoUser>GetUsers(@RequestHeader("Email") String email) {
 		return dtiService.GetUsers(email);
 	}
 	
 	@GetMapping("/getBuildings")
+	@CrossOrigin(origins = "*")
 	public ArrayList<SendInfoBuildng>GetBuildings(@RequestHeader("Email") String email) {
 		return dtiService.GetBuildings(email);
+	}
+	
+	@PostMapping("/getFloors")
+	@CrossOrigin(origins = "*")
+	public ArrayList<Integer>GetFloors(@RequestHeader("Email") String email,@RequestBody String building) {
+		return dtiService.GetFloors(email,building);
+	}
+	
+	@PostMapping("/getUser")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public User GetUser(@RequestHeader("Email") String email,@RequestBody String user) {
+		return dtiService.GetUser(email,user);
+	}
+	
+	@GetMapping("/getWiringCenter")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<String> GetWritingCenter(@RequestHeader("Email") String email) {
+		return dtiService.GetWritingCenter(email);
+	}
+	
+	@PostMapping("/getSwitches")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<Integer> getSwitches(@RequestHeader("Email") String email,@RequestBody String Wc) {
+		return dtiService.getSwitches(email,Wc);
+	}
+	
+	@PostMapping("/getPort")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public AddPort getPort(@RequestHeader("Email") String email,@RequestBody String port) {
+		return dtiService.getPort(email,port);
 	}
 }
 

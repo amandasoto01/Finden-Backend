@@ -1,5 +1,5 @@
 package com.Finden.findenBackEnd.models.service;
-
+import com.Finden.findenBackEnd.models.entity.Request;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,10 +52,13 @@ public class FacadeContratistaImpl implements FacadeContratista {
 	private PlaneXUserDAO pxuDAO;
 	
 	@Transactional
-	public String AddPLane(String Email, MultipartFile plane,String description) {
+	public Request AddPLane(String Email, MultipartFile plane,String description) {
+		Request req= new Request();
 		if(Check(Email, 1)||Check(Email, 3)) {
 			if(plane.getOriginalFilename()==null) {
-				return "No se seleciono un archivo";
+				req.setRequest(false);
+				req.setRes("No se seleciono un archivo");
+				return req;
 			}else if(plane.getOriginalFilename().contains(".dxf")){
 				try {
 					StringTokenizer token= new StringTokenizer(plane.getOriginalFilename(),"-");
@@ -68,9 +71,13 @@ public class FacadeContratistaImpl implements FacadeContratista {
 						int floorReal= Integer.parseInt(number)*-1;
 						res=CheckBuildingFloor(building, floorReal);
 						if(res==null) {
-							return "El edificio o el piso no existe";
+							req.setRequest(false);
+							req.setRes("El edificio o el piso no existe");
+							return req;
 						}else {
-							return SavePlane(plane,Email, "Edificio "+building+"/sotano "+floorReal*-1+"/revisión", description, res.get(1), res.get(0));
+							req.setRequest(true);
+							req.setRes(SavePlane(plane,Email, "Edificio "+building+"/sotano "+floorReal*-1+"/revisión", description, res.get(1), res.get(0)));
+							return req;
 						}
 					}else if(floor.contains("P")) {
 						StringTokenizer token2= new StringTokenizer(floor,".");
@@ -78,38 +85,55 @@ public class FacadeContratistaImpl implements FacadeContratista {
 						int floorReal= Integer.parseInt(number);
 						res=CheckBuildingFloor(building, floorReal);
 						if(res==null) {
-							return "El edificio o el piso no existe";
+							req.setRequest(false);
+							req.setRes("El edificio o el piso no existe");
+							return req;
 						}else {
-							return SavePlane(plane,Email, "Edificio "+building+"/piso "+floorReal* 1+"/revisión", description, res.get(1), res.get(0));
+							req.setRequest(true);
+							req.setRes(SavePlane(plane,Email, "Edificio "+building+"/piso "+floorReal* 1+"/revisión", description, res.get(1), res.get(0)));
+							return req;
 							
 						}	
 					}else {
-						return "El nombre se encuentra mal escrito";
+						req.setRequest(false);
+						req.setRes("El nombre se encuentra mal escrito");
+						return req;
 					}
 					
 				} catch (Exception e) {
-					return "El nombre se encuentra mal escrito"+ e;
+					req.setRequest(false);
+					req.setRes("El nombre se encuentra mal escrito"+ e);
+					return req;
 				}
 				
 				
 			}else {
-				return "El plano no es un archivo .dxf";
+				req.setRequest(false);
+				req.setRes("El plano no es un archivo .dxf");
+				return req;
 			}
 			
 		}else {
-			return "El usuario no tiene los permisos necesarios";
+			req.setRequest(false);
+			req.setRes("El usuario no tiene los permisos necesarios");
+			return req;
 		}
 	}
 	
 	@Override
 	@Transactional
-	public String CheckPlane(String Email, MultipartFile file) {
+	public Request CheckPlane(String Email, MultipartFile file) {
+		Request req= new Request();
 		if(Check(Email, 1)||Check(Email, 3)) {
 			if(file==null) {
-				return"holis";
+				req.setRequest(false);
+				req.setRes("no se envio un archivo");
+				return req;
 			}
 			if(file.getOriginalFilename()==null) {
-				return "No se seleciono un archivo";
+				req.setRequest(false);
+				req.setRes("No se seleciono un archivo");
+				return req;
 			}else if(file.getOriginalFilename().contains(".dxf")){
 				try {
 					StringTokenizer token= new StringTokenizer(file.getOriginalFilename(),"-");
@@ -122,9 +146,13 @@ public class FacadeContratistaImpl implements FacadeContratista {
 						int floorReal= Integer.parseInt(number)*-1;
 						res=CheckBuildingFloor(building, floorReal);
 						if(res==null) {
-							return "El edificio o el piso no existe";
+							req.setRequest(false);
+							req.setRes("El edificio o el piso no existe");
+							return req;
 						}else {
-							return GetNumberPorts(convert(file).getAbsolutePath());
+							req.setRequest(true);
+							req.setRes(GetNumberPorts(convert(file).getAbsolutePath()));
+							return req;
 						}
 					}else if(floor.contains("P")) {
 						StringTokenizer token2= new StringTokenizer(floor,".");
@@ -132,30 +160,43 @@ public class FacadeContratistaImpl implements FacadeContratista {
 						int floorReal= Integer.parseInt(number);
 						res=CheckBuildingFloor(building, floorReal);
 						if(res==null) {
-							return "El edificio o el piso no existe";
+							req.setRequest(false);
+							req.setRes("El edificio o el piso no existe");
+							return req;
 						}else {
-							return GetNumberPorts(convert(file).getAbsolutePath());
+							req.setRequest(true);
+							req.setRes(GetNumberPorts(convert(file).getAbsolutePath()));
+							return req;
 							
 						}	
 					}else {
-						return "El nombre se encuentra mal escrito";
+						req.setRequest(true);
+						req.setRes("El nombre se encuentra mal escrito");
+						return req;
 					}
 					
 				} catch (Exception e) {
-					return "El nombre se encuentra mal escrito"+ e;
+					req.setRequest(false);
+					req.setRes("El nombre se encuentra mal escrito"+ e);
+					return req;
 				}
 				
 				
 			}else {
-				return "El plano no es un archivo .dxf";
+				req.setRequest(false);
+				req.setRes("El plano no es un archivo .dxf");
+				return req;
 			}
 		}else {
-			return "El usuario no tiene los permisos necesarios";
+			req.setRequest(false);
+			req.setRes("El usuario no tiene los permisos necesarios");
+			return req;
 		}
 	}
 	
 	@Transactional
-	public String DeletePlane(String Email, String NamePlane) {
+	public Request DeletePlane(String Email, String NamePlane) {
+		Request res= new Request();
 		if(Check(Email, 1)||Check(Email, 3)) {
 			Plane plane;
 			plane=planeDAO.findByName(NamePlane);
@@ -177,22 +218,34 @@ public class FacadeContratistaImpl implements FacadeContratista {
 						File file= new File(plane.getDir());
 						if(file.delete()) {
 							planeDAO.delete(plane);
-							return "El plano se elimino exitosamente";	
+							res.setRequest(true);
+							res.setRes("El plano se elimino exitosamente");
+							return res;
 						}else {
-							return "Problema inesperado por favor comuniquese con la DTI javeriana";	
+							res.setRequest(false);
+							res.setRes("Problema inesperado por favor comuniquese con la DTI javeriana");
+							return res;	
 						}
 					}else {
-						return "Problema inesperado por favor comuniquese con la DTI javeriana";
+						res.setRequest(false);
+						res.setRes("Problema inesperado por favor comuniquese con la DTI javeriana");
+						return res;
 					}
 				}else {
-					return "El plano no puede ser eliminado";
+					res.setRequest(false);
+					res.setRes("El plano no puede ser eliminado");
+					return res;
 				}
 				
 			}else {
-				return"El plano no existe";
+				res.setRequest(false);
+				res.setRes("El plano no existe");
+				return res;
 			}
 		}else {
-			return "El usuario no tiene los permisos necesarios";
+			res.setRequest(false);
+			res.setRes("El usuario no tiene los permisos necesarios");
+			return res;
 		}
 
 	}
@@ -313,7 +366,7 @@ public class FacadeContratistaImpl implements FacadeContratista {
         for (String s : namePorts) {
 			System.out.println(s);
 		}
-        return "Se encontraron: "+(portsD+portsV+portsVD+RportsD+RportsV+RportsVD)+"Repartidons en:\n"
+        return "Se encontraron: "+(portsD+portsV+portsVD+RportsD+RportsV+RportsVD)+"Repartidos en:\n"
         		+portsVD+" tipo VD "+RportsVD+" Repetidos del tipo VD\n"
         		+portsV+" tipo V "+RportsV+" Repetidos del tipo V\n"
         		+ portsD+" tipo D "+RportsD+" Repetidos del tipo D\n"

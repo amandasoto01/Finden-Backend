@@ -16,6 +16,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.Finden.findenBackEnd.models.dao.BuildingDAO;
+import com.Finden.findenBackEnd.models.dao.FloorDAO;
 import com.Finden.findenBackEnd.models.dao.PortDAO;
 import com.Finden.findenBackEnd.models.dao.SwitchDAO;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
@@ -44,6 +46,12 @@ public class FacadeMesaDeServicioImpl implements FacadeMesaDeServicio{
 	@Autowired
 	private SwitchDAO switchDAO;
 	
+	@Autowired
+	private BuildingDAO buildingDAO;
+	
+	@Autowired
+	private FloorDAO floorDAO;
+	
 	@Override
 	@Transactional
 	public SendPort FindPort(String email, String port) {
@@ -60,10 +68,22 @@ public class FacadeMesaDeServicioImpl implements FacadeMesaDeServicio{
 						System.out.println("index: "+s.getIndex());
 						GetInfo info=FindHpeIMC(wc.getIdWirtingCenter(),findPort.getPortInSwitch()+s.getIndex()-1);
 						SendPort newPort= new SendPort();
-						newPort.setDescription(info.getIfDescription());
 						newPort.setMac(info.getPhyAddress());
 						newPort.setSpeed(info.getIfspeed().toString());
 						newPort.setState(info.getAdminStatusDesc());
+						String parameters="Edificio: "+buildingDAO.findById(findPort.getFloor_Building_Id()).get().getName();
+						parameters+=" N°: "+buildingDAO.findById(findPort.getFloor_Building_Id()).get().getNumber();
+						newPort.setBuilding(parameters);
+						parameters="El "+findPort.getPortInSwitch().toString();
+						parameters+=" del switch "+s.getNumeroSwitch();
+						newPort.setPort(parameters);
+						if(floorDAO.findById(findPort.getFloor_Id()).get().getNumber()>0) {
+							parameters="Piso - "+floorDAO.findById(findPort.getFloor_Id()).get().getNumber();
+						}else {
+							parameters="Sotano "+floorDAO.findById(findPort.getFloor_Id()).get().getNumber();
+						}
+						newPort.setFloor(parameters);
+						newPort.setWc(wc.getName());
 						return newPort;
 					} catch (IOException e) {
 						System.out.println(e.toString());

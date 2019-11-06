@@ -3,7 +3,7 @@ package com.Finden.findenBackEnd.models.entity;
 public class GetInfo {
 	private String phyAddress;
 	private String adminStatusDesc;
-	private String ifAlias;
+	private String ifDescription;
 	private Integer ifspeed;
 	public String getPhyAddress() {
 		return phyAddress;
@@ -18,10 +18,10 @@ public class GetInfo {
 		this.adminStatusDesc = adminStatusDesc;
 	}
 	public String getIfDescription() {
-		return ifAlias;
+		return ifDescription;
 	}
 	public void setIfDescription(String ifDescription) {
-		this.ifAlias = ifDescription;
+		this.ifDescription = ifDescription;
 	}
 	public Integer getIfspeed() {
 		return ifspeed;
@@ -35,7 +35,7 @@ public class GetInfo {
 	@Override
 	public String toString() {
 		return "GetInfo [phyAddress=" + phyAddress + ", adminStatusDesc=" + adminStatusDesc + ", ifAlias="
-				+ ifAlias + ", ifspeed=" + ifspeed + "]";
+				+ ifDescription + ", ifspeed=" + ifspeed + "]";
 	}
 
 	

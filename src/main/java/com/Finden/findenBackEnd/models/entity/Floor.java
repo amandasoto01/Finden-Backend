@@ -16,7 +16,7 @@ public class Floor {
 	private Integer id;
 	
 	@Column(name="number")
-	private int number;
+	private Integer number;
 	
 	@Column(name="Building_Id")
 	private int Building_Id;
@@ -33,11 +33,11 @@ public class Floor {
 		this.id = id;
 	}
 
-	public int getNumber() {
+	public Integer getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(Integer number) {
 		this.number = number;
 	}
 
