@@ -234,5 +234,24 @@ public class WebServicesRest {
 	public AddPort getPort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return dtiService.getPort(email,port);
 	}
+	
+	@PostMapping("/getPortsFloor/{edificio}/{piso}")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<PortList> getPortsFloor(@RequestHeader("Email") String email,@PathVariable Integer edificio,@PathVariable  Integer piso ) {
+		return dtiService.getPortsFloor(email,edificio,piso);
+	}
+	@PostMapping("/getUsername")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public String getUsername(@RequestBody String email) {
+		return dtiService.getUsername(email);
+	}
+	@PostMapping("/planesToApprove")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Integer planesToApprove(@RequestHeader("Email") String email) {
+		return dtiService.planesToApprove(email);
+	}
 }
 

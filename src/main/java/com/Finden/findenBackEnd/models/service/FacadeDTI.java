@@ -70,4 +70,10 @@ public interface FacadeDTI {
 	public AddPort getPort(String email,String port);
 	
 	public ArrayList<Integer> getSwitches(String email,String Wc);
+	
+	public ArrayList<PortList> getPortsFloor(String email,Integer edificio, Integer piso);
+	
+	public Integer planesToApprove(String email);
+	
+	public String getUsername(String email);
 }

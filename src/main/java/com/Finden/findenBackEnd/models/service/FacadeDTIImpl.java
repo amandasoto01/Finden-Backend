@@ -1368,6 +1368,101 @@ public class FacadeDTIImpl implements FacadeDTI{
     	}
     }
     
+    @Transactional
+    public ArrayList<PortList> getPortsFloor(String email,Integer edificio, Integer piso){
+    	if(Check(email, 1)) {
+    		Building b= new Building();
+    		b.setId(null);
+    		b.setName(null);
+    		b.setNumber(edificio);
+    		List<Building> bu= new ArrayList<Building>();
+    		Iterable<Building>I;
+    		Example<Building>buildingExample=Example.of(b);
+    		I=buildingDAO.findAll(buildingExample);
+    		for(Building build:I) {
+    			bu.add(build);
+    		}
+    		if(bu.size()>0) {
+    			Floor f= new Floor();
+    			f.setBuilding_Id(bu.get(0).getId());
+    			f.setNumber(piso);
+    			f.setId(null);
+    			List<Floor> fl= new ArrayList<Floor>();
+    			Iterable<Floor>F;
+    			Example<Floor>floorExample=Example.of(f);
+    			F=floorDAO.findAll(floorExample);
+    			for(Floor floo:F) {
+    				fl.add(floo);
+    			}
+    			if(fl.size()>0) {
+    				Plane p= new Plane();
+    				p.setFloor_Building_Id(b.getId());
+    				p.setFloor_id(f.getId());
+    				List<Plane> ps= new ArrayList<Plane>();
+    				Iterable<Plane>P;
+    				Example<Plane>pExample=Example.of(p);
+    				P=planeDAO.findAll(pExample);
+    				for(Plane plane:P) {
+    					ps.add(plane);
+    				}
+    				if(ps.size()>0) {
+    					GetPlane gp= new GetPlane();
+    					gp.setNamePlane(ps.get(0).getName());
+    					gp.setVersion(ps.get(0).getVersion());
+    					return this.GetPlanePorts(email, gp);
+    				}else {
+    					return null;
+    				}
+    				}else {
+    					return null;
+    				}
+    			}else {
+    				return null;
+    			}
+    	}else {
+			return null;
+		}
+    }
+
+    @Transactional
+    public Integer planesToApprove(String email) {
+    	if(Check(email, 1)) {
+    		Plane plane = new Plane();
+    		List<Plane> planes= new ArrayList<Plane>();
+    		Iterable<Plane>I;
+    		plane.setState(1);
+    		Example<Plane>planeExample=Example.of(plane);
+    		I=planeDAO.findAll(planeExample);
+    		for(Plane pl:I) {
+    			planes.add(pl);
+    		}
+    			return planes.size();
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
+    public String getUsername(String email) {
+    	User us = new User();
+		List<User> u= new ArrayList<User>();
+		Iterable<User>I;
+		us.setEmail(email);
+		us.setName(null);
+		us.setType(null);
+		us.setPassword(null);
+		Example<User>userExample=Example.of(us);
+		I=userDAO.findAll(userExample);
+		for(User usu:I) {
+			u.add(usu);
+		}
+		if(u.size()>0) {
+		return u.get(0).getName();
+		}else {
+			return null;
+		}
+    }
+    
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
 		Building b= new Building();
