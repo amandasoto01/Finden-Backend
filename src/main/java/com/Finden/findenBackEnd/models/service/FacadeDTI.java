@@ -14,7 +14,6 @@ import com.Finden.findenBackEnd.models.entity.ApprovePlane;
 import com.Finden.findenBackEnd.models.entity.GetPlane;
 import com.Finden.findenBackEnd.models.entity.HistorialPlane;
 import com.Finden.findenBackEnd.models.entity.ListPorts;
-import com.Finden.findenBackEnd.models.entity.Port;
 import com.Finden.findenBackEnd.models.entity.PortList;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.SendInfoBuildng;
@@ -49,12 +48,8 @@ public interface FacadeDTI {
 	public ArrayList<SendInfoBuildng>GetBuildings(String email);
 	
 	public ArrayList<Integer>GetFloors(String email,String building);
-	
-<<<<<<< HEAD
+
 	public ResponseEntity<Resource> GetPlane(String email,GetPlane plane);
-=======
-	public File GetPlane(String email,GetPlane plane);
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	
 	public ArrayList<PortList> GetPlanePorts(String email,GetPlane plane);
 
@@ -68,17 +63,11 @@ public interface FacadeDTI {
 	
 	public ArrayList<SendInfoPlane> GetAllPlanes(String email,String user);
 	
-<<<<<<< HEAD
 	public ArrayList<SendInfoPlane>GetAllPlanesDTI(String email,SendInfoPlane user);
 	
 	public User GetUser(String email,String user);
 	
 	public AddPort getPort(String email,String port);
-=======
-	public User GetUser(String email,String user);
-	
-	public Port getPort(String email,String port);
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	
 	public ArrayList<Integer> getSwitches(String email,String Wc);
 }

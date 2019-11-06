@@ -213,7 +213,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 	}
 	
-<<<<<<< HEAD
 	@Override
 	@Transactional
 	public User GetUser(String email,String user) {
@@ -238,32 +237,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 	
 	@Override
 	@Transactional
-=======
-	@Override
-	@Transactional
-	public User GetUser(String email,String user) {
-		User us = new User();
-		List<User> u= new ArrayList<User>();
-		Iterable<User>I;
-		us.setEmail(user);
-		us.setName(null);
-		us.setType(null);
-		us.setPassword(null);
-		Example<User>userExample=Example.of(us);
-		I=userDAO.findAll(userExample);
-		for(User usu:I) {
-			u.add(usu);
-		}
-		if(u.size()>0) {
-		return u.get(0);
-		}else {
-			return null;
-		}
-	}
-	
-	@Override
-	@Transactional
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	public Request CreateBuilding(String correo, AddBuilding add) {
 		Request res= new Request();
 		boolean problem= false;
@@ -501,6 +474,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 		}
 	}
 	
+	@Transactional
 	public Request DeletePort(String port, String email) {
 		Request res= new Request();
 		if(Check(email, 1)) {
@@ -526,7 +500,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 			res.setRequest(false);
 			res.setRes("El usuario no tiene permiso para realizar esta acción");
 			return res;
-<<<<<<< HEAD
 		}
 	}
 	
@@ -561,28 +534,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 	@Transactional
 	public Request UpdatePort(String email,UpdatePort updatePort) {
 		Request res = new Request();
-=======
-		}
-	}
-	
-	//agregar bien todo los datos
-	@Transactional
-	public Port getPort(String email,String port) {
-		if(Check(email, 1)) {
-			Port p= portDAO.findByName(port);
-			if(p!=null) {
-				return p;
-			}else {
-				return null;
-			}
-		}else {
-			return null;
-		}
-	}
-	
-	@Transactional
-	public String UpdatePort(String email,UpdatePort updatePort) {
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 		Port port;
 		Port newPort= new Port();
 		if(Check(email, 1)) {

@@ -36,28 +36,19 @@ public class WebServicesRest {
 	
 	
 	@PostMapping("/login")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	public Request login(@RequestBody User user) {
 		return generalService.Login(user);
 	}
 	
 	@PostMapping("/send")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	public Request Send(@RequestBody User user) {
 		return generalService.Enviar(user);
 	}
 		
 	@PostMapping("/password")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	public Request Correction(@RequestBody Correction nuevo) {
 		return generalService.Correguir(nuevo);
 	}
@@ -69,20 +60,14 @@ public class WebServicesRest {
 		return dtiService.Create(usuario, email);
 	}
 	@PostMapping("/updateUser")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public Request UpdateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return dtiService.UpdateUser(usuario, email);
 	}
 
 	@PostMapping("/deleteUser")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public Request DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
 		return dtiService.Delete(correo, email);
@@ -110,10 +95,7 @@ public class WebServicesRest {
 	}
 	
 	@PostMapping("/deletePort")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public Request DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return dtiService.DeletePort(port, email);
@@ -220,55 +202,36 @@ public class WebServicesRest {
 	}
 	
 	@PostMapping("/getFloors")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	public ArrayList<Integer>GetFloors(@RequestHeader("Email") String email,@RequestBody String building) {
 		return dtiService.GetFloors(email,building);
 	}
 	
 	@PostMapping("/getUser")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public User GetUser(@RequestHeader("Email") String email,@RequestBody String user) {
 		return dtiService.GetUser(email,user);
 	}
 	
 	@GetMapping("/getWiringCenter")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public ArrayList<String> GetWritingCenter(@RequestHeader("Email") String email) {
 		return dtiService.GetWritingCenter(email);
 	}
 	
 	@PostMapping("/getSwitches")
-<<<<<<< HEAD
 	@CrossOrigin(origins = "*")
-=======
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 	@ResponseStatus(HttpStatus.CREATED)
 	public ArrayList<Integer> getSwitches(@RequestHeader("Email") String email,@RequestBody String Wc) {
 		return dtiService.getSwitches(email,Wc);
 	}
 	
-<<<<<<< HEAD
 	@PostMapping("/getPort")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
 	public AddPort getPort(@RequestHeader("Email") String email,@RequestBody String port) {
-=======
-	//cambiar por addPort 
-	@PostMapping("/getPort")
-	@ResponseStatus(HttpStatus.CREATED)
-	public Port getPort(@RequestHeader("Email") String email,@RequestBody String port) {
->>>>>>> f1b2a4b7441b257f12768a62b335fa22317ea764
 		return dtiService.getPort(email,port);
 	}
 }
