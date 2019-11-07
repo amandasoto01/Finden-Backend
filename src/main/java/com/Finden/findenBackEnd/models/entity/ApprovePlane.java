@@ -5,6 +5,7 @@ public class ApprovePlane {
 	private String Email;
 	private String NamePlane;
 	private boolean Status;
+	private String description;
 	public String getEmail() {
 		return Email;
 	}
@@ -23,12 +24,19 @@ public class ApprovePlane {
 	public void setStatus(boolean status) {
 		Status = status;
 	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	public ApprovePlane() {
 		
 	}
 	@Override
 	public String toString() {
-		return "ApprovePlane [Email=" + Email + ", NamePlane=" + NamePlane + ", Status=" + Status + "]";
+		return "ApprovePlane [Email=" + Email + ", NamePlane=" + NamePlane + ", Status=" + Status + ", description="
+				+ description + "]";
 	}
 	
 }

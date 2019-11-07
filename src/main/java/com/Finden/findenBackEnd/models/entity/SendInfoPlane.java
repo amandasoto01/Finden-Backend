@@ -7,6 +7,12 @@ public class SendInfoPlane {
 	private String Description;
 	private String Status;
 	private int version;
+	private String dateApproval;
+	private String observation;
+	private String dateUpload;
+	public SendInfoPlane() {
+		
+	}
 	public String getBuilding() {
 		return Building;
 	}
@@ -43,13 +49,30 @@ public class SendInfoPlane {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+	public String getDateApproval() {
+		return dateApproval;
+	}
+	public void setDateApproval(String dateApproval) {
+		this.dateApproval = dateApproval;
+	}
+	public String getObservation() {
+		return observation;
+	}
+	public void setObservation(String observation) {
+		this.observation = observation;
+	}
+	public String getDateUpload() {
+		return dateUpload;
+	}
+	public void setDateUpload(String dateUpload) {
+		this.dateUpload = dateUpload;
+	}
 	@Override
 	public String toString() {
 		return "SendInfoPlane [Building=" + Building + ", Floor=" + Floor + ", Name=" + Name + ", Description="
-				+ Description + ", Status=" + Status + ", version=" + version + "]";
+				+ Description + ", Status=" + Status + ", version=" + version + ", dateApproval=" + dateApproval
+				+ ", observation=" + observation + ", dateUpload=" + dateUpload + "]";
 	}
-
-
 	
 	
 }

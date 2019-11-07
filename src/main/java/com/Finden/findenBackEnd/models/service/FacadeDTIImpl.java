@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -401,6 +402,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 	}	
 	
 	public Request CreatePort(String correo, AddPort add) {
+		System.out.println(add.toString());
 		Request res = new Request();
 		if(Check(correo, 1)) {
 			if(checkBuildingsFloor(add.getBuilding(), add.getFloor())) {
@@ -438,9 +440,7 @@ public class FacadeDTIImpl implements FacadeDTI{
 							Iterable<Switch>SI;
 							if(Wc!=null) {
 								s.setWritingCenter_id(Wc.getId());
-								
-							}else {
-							s.setWritingCenter_id(null);	
+								port.setSwitch_WritingCenter_id(Wc.getId());
 							}
 							if(add.getSwitch()!=null) {
 								s.setNumeroSwitch(add.getSwitch());
@@ -452,12 +452,10 @@ public class FacadeDTIImpl implements FacadeDTI{
 									u.add(swit);
 								}
 								port.setSwitch_id(u.get(0).getId());
-								port.setSwitch_WritingCenter_id(u.get(0).getWritingCenter_id());
+								
 							}else {
 								port.setSwitch_id(null);
-								port.setSwitch_WritingCenter_id(null);
 							}
-							System.out.println(port);
 							portDAO.save(port);
 							res.setRequest(true);
 							res.setRes("Puerto Creado con exito");
@@ -513,8 +511,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 				send.setBuilding(buildingDAO.findById(p.getFloor_Building_Id()).get().getNumber());
 				send.setFloor(floorDAO.findById(p.getFloor_Id()).get().getNumber());
 				send.setNPortSwitch(p.getPortInSwitch());
-				send.setSwitch(switchDAO.findById(p.getSwitch_id()).get().getNumeroSwitch());
-				send.setWiringCenter(wcDAO.findById(p.getSwitch_WritingCenter_id()).get().getName());
 				if(p.getType()==1) {
 					send.setType("V");
 				}else if(p.getType()==2) {
@@ -522,7 +518,14 @@ public class FacadeDTIImpl implements FacadeDTI{
 				}else if(p.getType()==3){
 					send.setType("VD");
 				}
+				if(p.getSwitch_WritingCenter_id()!=null) {
+					send.setWiringCenter(wcDAO.findById(p.getSwitch_WritingCenter_id()).get().getName());	
+				}
+				if(p.getSwitch_id()!=null) {
+					send.setSwitch(switchDAO.findById(p.getSwitch_id()).get().getNumeroSwitch());
+				}
 				return send;
+				
 			}else {
 				return null;
 			}
@@ -713,7 +716,11 @@ public class FacadeDTIImpl implements FacadeDTI{
 						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-"+(NFiles.length+1)+".dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
-						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						if(approvePlane.getDescription()!=null) {
+							plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName()+"-Observación:"+approvePlane.getDescription());
+						}else {
+							plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						}
 						plane.setVersion(NFiles.length+1);
 						try {
 							File file = new File(pathNumber);
@@ -724,7 +731,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 							planeDAO.save(pl.get(0));
 							planeDAO.save(plane);
 						} catch (IOException e) {
-							System.out.println(e.toString());
 						}
 						res.setRequest(true);
 						res.setRes("se aprobo exitosamente el plano");
@@ -736,7 +742,11 @@ public class FacadeDTIImpl implements FacadeDTI{
 						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-1.dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
-						plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						if(approvePlane.getDescription()!=null) {
+							plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName()+"-Observación:"+approvePlane.getDescription());
+						}else {
+							plane.setObservation("Se aprobo por el usuario: "+u.get(0).getName());
+						}
 						plane.setVersion(1);
 						try {
 							File file = new File(pathNumber);
@@ -756,7 +766,11 @@ public class FacadeDTIImpl implements FacadeDTI{
 				}else {
 					if(plane.getState()==1) {
 						plane.setState(2);
-						plane.setObservation("El plano a sido rechazado por el usuario: "+u.get(0).getName());
+						if(approvePlane.getDescription()!=null) {
+							plane.setObservation("El plano a sido rechazado por el usuario:" +u.get(0).getName()+"-Observación:"+approvePlane.getDescription());
+						}else {
+							plane.setObservation("El plano a sido rechazado por el usuario:" +u.get(0).getName());
+						}
 						planeDAO.save(plane);
 						res.setRequest(true);
 						res.setRes("Se rechazo el plano exitosamente");
@@ -800,7 +814,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 				}
 				if(pl.size()>0) {
 					File file = new File(pl.get(0).getDir());
-					System.out.println(file.getAbsolutePath());
 					InputStreamResource resource;
 					try {
 						resource = new InputStreamResource(new FileInputStream(file));
@@ -884,18 +897,18 @@ public class FacadeDTIImpl implements FacadeDTI{
 								portl.setSwitch(null);
 								ap.setNPortSwitch(null);
 								ap.setSwitch(null);
-								ap.setWiringCenter(null);
 								ports.add(portl);
 								this.CreatePort(email, ap);							
 							}else {
 								portl.setPort(p.getName());
 								portl.setPortInSwitch(p.getPortInSwitch());
+								if(p.getSwitch_WritingCenter_id()!=null) {
+									portl.setWritingCenter(wcDAO.findById(p.getSwitch_WritingCenter_id()).get().getName());
+								}
 								if(p.getSwitch_id()!=null) {
 									portl.setSwitch(switchDAO.findById(p.getSwitch_id()).get().getNumeroSwitch());
-									portl.setWritingCenter(wcDAO.findById(p.getSwitch_WritingCenter_id()).get().getName());
 								}else {
 									portl.setSwitch(null);
-									portl.setWritingCenter(null);
 								}
 								ports.add(portl);
 							}
@@ -903,7 +916,6 @@ public class FacadeDTIImpl implements FacadeDTI{
 						}
 						return ports;
 					} catch (ParseException e) {
-						System.out.println(e.toString());
 						return null;
 					}
 					
@@ -980,6 +992,7 @@ public class FacadeDTIImpl implements FacadeDTI{
     @Transactional
     public ArrayList<SendInfoPlane> GetApproved(String email,String user){
     	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
     		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
     		User us = new User();
     		List<User> u= new ArrayList<User>();
@@ -1012,13 +1025,19 @@ public class FacadeDTIImpl implements FacadeDTI{
     					sip= new SendInfoPlane();
     					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
     					if(plane.getState()==4||plane.getState()==3) {
-    						if(plane.getState()==4) {
-    							sip.setStatus("correguir");
-    						}else {
-    							sip.setStatus("correguir");
-    						}
+    						sip.setStatus("Aprobado");
     						sip.setName(plane.getName());
     						sip.setDescription(plane.getDescription());
+    						sip.setBuilding(buildingDAO.findById(plane.getFloor_Building_Id()).get().getNumber()+"-"+buildingDAO.findById(plane.getFloor_Building_Id()).get().getName());
+    						if(floorDAO.findById(plane.getFloor_id()).get().getNumber()>0) {
+        						sip.setFloor("Piso - "+floorDAO.findById(plane.getFloor_id()).get().getNumber());
+        					}else {
+        						sip.setFloor("Sotano "+floorDAO.findById(plane.getFloor_id()).get().getNumber());
+        					}
+    						sip.setVersion(plane.getVersion());
+    						sip.setObservation(plane.getObservation());
+    						sip.setDateApproval(formatter.format(plane.getDateApproval()));	
+    						sip.setDateUpload(formatter.format(plane.getDateUpload()));
     						ip.add(sip);
     					}
     				}
@@ -1037,6 +1056,7 @@ public class FacadeDTIImpl implements FacadeDTI{
     @Transactional
     public ArrayList<SendInfoPlane> GetRejected(String email,String user){
     	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
     		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
     		User us = new User();
     		List<User> u= new ArrayList<User>();
@@ -1069,9 +1089,17 @@ public class FacadeDTIImpl implements FacadeDTI{
     					sip= new SendInfoPlane();
     					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
     					if(plane.getState()==2) {
-    						sip.setStatus("rechazado");
+    						sip.setStatus("Rechazado");
     						sip.setName(plane.getName());
     						sip.setDescription(plane.getDescription());
+    						sip.setBuilding(buildingDAO.findById(plane.getFloor_Building_Id()).get().getNumber()+"-"+buildingDAO.findById(plane.getFloor_Building_Id()).get().getName());
+    						if(floorDAO.findById(plane.getFloor_id()).get().getNumber()>0) {
+        						sip.setFloor("Piso - "+floorDAO.findById(plane.getFloor_id()).get().getNumber());
+        					}else {
+        						sip.setFloor("Sotano "+floorDAO.findById(plane.getFloor_id()).get().getNumber());
+        					}
+    						sip.setObservation(plane.getObservation());
+    						sip.setDateUpload(formatter.format(plane.getDateUpload()));
     						ip.add(sip);
     					}
     				}
@@ -1090,6 +1118,7 @@ public class FacadeDTIImpl implements FacadeDTI{
     @Transactional
     public ArrayList<SendInfoPlane> GetAllPlanes(String email,String user){
     	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
     		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
     		User us = new User();
     		List<User> u= new ArrayList<User>();
@@ -1115,7 +1144,6 @@ public class FacadeDTIImpl implements FacadeDTI{
     				pxuList.add(usu);
     			}
     			if(pxuList.size()>0) {
-    				Building building;
     				Floor floor;
     				Plane plane;
     	    		SendInfoPlane sip;
@@ -1123,7 +1151,6 @@ public class FacadeDTIImpl implements FacadeDTI{
     					plane= new Plane();
     					sip= new SendInfoPlane();
     					plane=planeDAO.findById(pxuList.get(j).getPlane_Id()).get();
-    					building=buildingDAO.findById(plane.getFloor_Building_Id()).get();
     					floor=floorDAO.findById(plane.getFloor_id()).get();
     					if(plane.getState()==4) {
     						sip.setStatus("actual");
@@ -1134,11 +1161,11 @@ public class FacadeDTIImpl implements FacadeDTI{
     					}else if(plane.getState()==1) {
     						sip.setStatus("en revisión");
     					}
-    					sip.setBuilding(+building.getNumber()+"-"+building.getName());
-    					if(floor.getNumber()>=0) {
-    						sip.setFloor("piso -"+floor.getNumber());
+    					sip.setBuilding(buildingDAO.findById(plane.getFloor_Building_Id()).get().getNumber()+"-"+buildingDAO.findById(plane.getFloor_Building_Id()).get().getName());
+						if(floor.getNumber()> 0) {
+    						sip.setFloor("Piso - "+floor.getNumber());
     					}else {
-    						sip.setFloor("sotano"+floor.getNumber());
+    						sip.setFloor("Sotano "+floor.getNumber());
     					}
     					sip.setName(plane.getName());
 						sip.setDescription(plane.getDescription());
@@ -1147,6 +1174,12 @@ public class FacadeDTIImpl implements FacadeDTI{
 						}else {
 							sip.setVersion(plane.getVersion());
 						}
+						sip.setObservation(plane.getObservation());
+						if(plane.getDateApproval()!=null) {
+							
+							sip.setDateApproval(formatter.format(plane.getDateApproval()));	
+						}
+						sip.setDateUpload(formatter.format(plane.getDateUpload()));
 						ip.add(sip);
     				}
     	    		return ip;
@@ -1162,8 +1195,9 @@ public class FacadeDTIImpl implements FacadeDTI{
     }
     
     @Transactional
-    public ArrayList<SendInfoPlane> GetAllPlanesDTI(String email,SendInfoPlane user){
+    public ArrayList<SendInfoPlane> getAllPlanesActual(String email,SendInfoPlane user) {
     	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
     		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
     		Building building= new Building();
     		List<Building> bu= new ArrayList<Building>();
@@ -1226,9 +1260,104 @@ public class FacadeDTIImpl implements FacadeDTI{
     						}else {
     							sip.setVersion(plane.getVersion());
     						}
+    						sip.setObservation(plane.getObservation());
+    						if(plane.getDateApproval()!=null) {
+    							
+    							sip.setDateApproval(formatter.format(plane.getDateApproval()));	
+    						}
+    						sip.setDateUpload(formatter.format(plane.getDateUpload()));
     						ip.add(sip);
         				}
-        	    		return ip;
+        	    		return this.getAprove(ip);
+            		}else {
+            			return null;
+            		}
+        		}else {
+        			return null;
+        		}
+    		}else {
+    			return null;
+    		}
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
+    public ArrayList<SendInfoPlane> GetAllPlanesDTI(String email,SendInfoPlane user){
+    	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+    		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
+    		Building building= new Building();
+    		List<Building> bu= new ArrayList<Building>();
+    		Iterable<Building>I;
+    		building.setId(null);
+    		building.setName(null);
+    		building.setNumber(Integer.parseInt(user.getBuilding()));
+			Example<Building>buExample=Example.of(building);
+    		I=buildingDAO.findAll(buExample);
+    		for(Building b:I) {
+    			bu.add(b);
+    		}
+    		if(bu.size()>0) {
+    			Floor floor= new Floor();
+        		List<Floor> fl= new ArrayList<Floor>();
+        		Iterable<Floor>FI;
+        		floor.setNumber(Integer.parseInt(user.getFloor()));
+        		floor.setBuilding_Id(bu.get(0).getId());
+    			Example<Floor>flExample=Example.of(floor);
+        		FI=floorDAO.findAll(flExample);
+        		for(Floor b:FI) {
+        			fl.add(b);
+        		}
+        		if(fl.size()>0) {
+        			Plane plane= new Plane();
+            		List<Plane> pls= new ArrayList<Plane>();
+            		Iterable<Plane>PI;
+            		plane.setFloor_Building_Id(bu.get(0).getId());
+            		plane.setFloor_id(fl.get(0).getId());
+        			Example<Plane>plExample=Example.of(plane);
+            		PI=planeDAO.findAll(plExample);
+            		for(Plane b:PI) {
+            			pls.add(b);
+            		}
+            		if(pls.size()>0) {
+            			SendInfoPlane sip;
+        	    		for (int j = 0; j < pls.size(); j++) {
+        					plane= new Plane();
+        					sip= new SendInfoPlane();
+        					plane=planeDAO.findById(pls.get(j).getId()).get();
+        					if(plane.getState()==4) {
+        						sip.setStatus("actual");
+        					}else if(plane.getState()==3) {
+        						sip.setStatus("aprobado");
+        					}else if(plane.getState()==2) {
+        						sip.setStatus("rechazado");
+        					}else if(plane.getState()==1) {
+        						sip.setStatus("en revisión");
+        					}
+        					sip.setBuilding(bu.get(0).getNumber()+"-"+bu.get(0).getName());
+        					if(floor.getNumber()> 0) {
+        						sip.setFloor("Piso - "+floor.getNumber());
+        					}else {
+        						sip.setFloor("Sotano "+floor.getNumber());
+        					}
+        					sip.setName(plane.getName());
+    						sip.setDescription(plane.getDescription());
+    						if(plane.getVersion()==null) {
+    							sip.setVersion(0);
+    						}else {
+    							sip.setVersion(plane.getVersion());
+    						}
+    						sip.setObservation(plane.getObservation());
+    						if(plane.getDateApproval()!=null) {
+    							
+    							sip.setDateApproval(formatter.format(plane.getDateApproval()));	
+    						}
+    						sip.setDateUpload(formatter.format(plane.getDateUpload()));
+    						ip.add(sip);
+        				}
+        	    		return this.Order(ip);
             		}else {
             			return null;
             		}
@@ -1676,4 +1805,48 @@ public class FacadeDTIImpl implements FacadeDTI{
 		return exist;
 	}
 	
+	private ArrayList<SendInfoPlane> Order(ArrayList<SendInfoPlane> planes){
+		ArrayList<SendInfoPlane>order= new ArrayList<SendInfoPlane>();
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="en revisión") {
+				order.add(planes.get(i));
+			}
+		}
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="actual") {
+				order.add(planes.get(i));
+				break;
+			}
+		}
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="aprobado") {
+				order.add(planes.get(i));
+			}
+		}
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="rechazado") {
+				order.add(planes.get(i));
+			}
+		}
+		return order;
+	}
+	
+	private ArrayList<SendInfoPlane> getAprove(ArrayList<SendInfoPlane> planes){
+		ArrayList<SendInfoPlane>order= new ArrayList<SendInfoPlane>();
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="actual") {
+				order.add(planes.get(i));
+				break;
+			}
+		}
+		for (int i = 0; i < planes.size(); i++) {
+			if(planes.get(i).getStatus()=="aprobado") {
+				order.add(planes.get(i));
+			}
+		}
+		for (int i = 0; i < order.size(); i++) {
+			
+		}
+		return order;
+	}
 }

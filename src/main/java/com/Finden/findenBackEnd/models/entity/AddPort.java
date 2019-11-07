@@ -7,7 +7,7 @@ public class AddPort {
 	private Integer Switch;
 	private Integer NPortSwitch;
 	private String Type;
-	private String WiringCenter;
+	private String wiringcenter;
 	public Integer getBuilding() {
 		return Building;
 	}
@@ -45,10 +45,10 @@ public class AddPort {
 		Type = type;
 	}
 	public String getWiringCenter() {
-		return WiringCenter;
+		return wiringcenter;
 	}
 	public void setWiringCenter(String wiringCenter) {
-		WiringCenter = wiringCenter;
+		wiringcenter = wiringCenter;
 	}
 	
 	public AddPort() {
@@ -57,7 +57,7 @@ public class AddPort {
 	@Override
 	public String toString() {
 		return "AddPort [Building=" + Building + ", Floor=" + Floor + ", Name=" + Name + ", Switch=" + Switch
-				+ ", NPortSwitch=" + NPortSwitch + ", Type=" + Type + ", WiringCenter=" + WiringCenter + "]";
+				+ ", NPortSwitch=" + NPortSwitch + ", Type=" + Type + ", WiringCenter=" + wiringcenter + "]";
 	}
 	
 

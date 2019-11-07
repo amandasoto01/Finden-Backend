@@ -146,7 +146,7 @@ public class WebServicesRest {
 		return dtiService.GetPlane(email, plane);
 	}
 	
-	@GetMapping("/planePorts")
+	@PostMapping("/planePorts")
 	@CrossOrigin(origins = "*")
 	public ArrayList<PortList> GetPlanePorts(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return dtiService.GetPlanePorts(email, plane);
@@ -164,22 +164,22 @@ public class WebServicesRest {
 		return dtiService.Historial(email, plane);
 	}
 	
-	@GetMapping("/getApprovedPlanes")
+	@PostMapping("/getApprovedPlanes")
 	@CrossOrigin(origins = "*")
-	public ArrayList<SendInfoPlane>GetApproved(@RequestHeader("Email") String email,@RequestBody String user) {
-		return dtiService.GetApproved(email, user);
+	public ArrayList<SendInfoPlane>GetApproved(@RequestHeader("Email") String email) {
+		return dtiService.GetApproved(email, email);
 	}
 	
-	@GetMapping("/getRejectedPlanes")
+	@PostMapping("/getRejectedPlanes")
 	@CrossOrigin(origins = "*")
-	public ArrayList<SendInfoPlane>GetRejected(@RequestHeader("Email") String email,@RequestBody String user) {
-		return dtiService.GetRejected(email, user);
+	public ArrayList<SendInfoPlane>GetRejected(@RequestHeader("Email") String email) {
+		return dtiService.GetRejected(email, email);
 	}
 	
-	@GetMapping("/getAllPlanes")
+	@PostMapping("/getAllPlanes")
 	@CrossOrigin(origins = "*")
-	public ArrayList<SendInfoPlane>GetAllPlanes(@RequestHeader("Email") String email,@RequestBody String user) {
-		return dtiService.GetAllPlanes(email, user);
+	public ArrayList<SendInfoPlane>GetAllPlanes(@RequestHeader("Email") String email) {
+		return dtiService.GetAllPlanes(email, email);
 	}
 	
 	@PostMapping("/getAllPlanesDTI")
@@ -187,6 +187,12 @@ public class WebServicesRest {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ArrayList<SendInfoPlane>GetAllPlanesDTI(@RequestHeader("Email") String email,@RequestBody SendInfoPlane user) {
 		return dtiService.GetAllPlanesDTI(email, user);
+	}
+	@PostMapping("/getAllPlanesActual")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ArrayList<SendInfoPlane> getAllPlanesActual(@RequestHeader("Email") String email,@RequestBody SendInfoPlane user) {
+		return dtiService.getAllPlanesActual(email, user);
 	}
 	
 	@GetMapping("/getUsers")

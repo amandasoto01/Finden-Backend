@@ -65,6 +65,8 @@ public interface FacadeDTI {
 	
 	public ArrayList<SendInfoPlane>GetAllPlanesDTI(String email,SendInfoPlane user);
 	
+	public ArrayList<SendInfoPlane> getAllPlanesActual(String email,SendInfoPlane user);
+	
 	public User GetUser(String email,String user);
 	
 	public AddPort getPort(String email,String port);
