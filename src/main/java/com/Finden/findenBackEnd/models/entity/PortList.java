@@ -1,15 +1,16 @@
 package com.Finden.findenBackEnd.models.entity;
 
 public class PortList {
-	private String writingCenter;
+	private String wiringCenter;
 	private Integer Switch;
 	private String Port;
 	private Integer portInSwitch;
+	private String type;
 	public String getWritingCenter() {
-		return writingCenter;
+		return wiringCenter;
 	}
 	public void setWritingCenter(String writingCenter) {
-		this.writingCenter = writingCenter;
+		this.wiringCenter = writingCenter;
 	}
 	public Integer getSwitch() {
 		return Switch;
@@ -29,15 +30,18 @@ public class PortList {
 	public void setPortInSwitch(Integer portInSwitch) {
 		this.portInSwitch = portInSwitch;
 	}
-	
-	public PortList() {
-	
+	public String getType() {
+		return type;
 	}
-	
+	public void setType(String type) {
+		this.type = type;
+	}
+	@Override
 	public String toString() {
-		return "PortList [writingCenter=" + writingCenter + ", Switch=" + Switch + ", Port=" + Port + ", portInSwitch="
-				+ portInSwitch + "]";
+		return "PortList [writingCenter=" + wiringCenter + ", Switch=" + Switch + ", Port=" + Port + ", portInSwitch="
+				+ portInSwitch + ", type=" + type + "]";
 	}
-	
-	
+	public PortList() {
+		
+	}
 }
