@@ -201,7 +201,6 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 								}else {
 									portl.setSwitch(null);
 								}
-								System.out.println(portl.toString());
 								ports.add(portl);
 							}
 							
@@ -249,25 +248,40 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
     				fl.add(floo);
     			}
     			if(fl.size()>0) {
-    				Plane p= new Plane();
-    				p.setFloor_Building_Id(b.getId());
-    				p.setFloor_id(f.getId());
-    				p.setState(4);
-    				List<Plane> ps= new ArrayList<Plane>();
-    				Iterable<Plane>P;
-    				Example<Plane>pExample=Example.of(p);
-    				P=planeDAO.findAll(pExample);
-    				for(Plane plane:P) {
-    					ps.add(plane);
+    				Port p= new Port();
+    				p.setFloor_Building_Id(bu.get(0).getId());
+    				p.setFloor_Id(fl.get(0).getId());
+    				ArrayList<PortList> ps= new ArrayList<PortList>();
+    				Iterable<Port>P;
+    				Example<Port>pExample=Example.of(p);
+    				P=portDAO.findAll(pExample);
+    				PortList pl;
+    				Switch s;
+    				WritingCenter wc;
+    				for(Port port:P) {
+    					wc= new WritingCenter();
+    					s= new Switch();
+    					pl= new PortList();
+    					pl.setPort(port.getName());
+    					pl.setPortInSwitch(port.getPortInSwitch());
+    					if(port.getSwitch_WritingCenter_id()!=null) {
+    						wc=wcDAO.findById(port.getSwitch_WritingCenter_id()).get();	
+        					pl.setWritingCenter(wc.getName());	
+    					}
+    					if(port.getSwitch_id()!=null) {
+    						s=switchDAO.findById(port.getSwitch_id()).get();
+    						pl.setSwitch(s.getNumeroSwitch());
+    					}
+    					if(port.getType()==1) {
+    						pl.setType("V");
+    					}else if(port.getType()==2) {
+    						pl.setType("D");
+    					}else if(port.getType()==3){
+    						pl.setType("VD");
+    					}
+    					ps.add(pl);
     				}
-    				if(ps.size()>0) {
-    					GetPlane gp= new GetPlane();
-    					gp.setNamePlane(ps.get(0).getName());
-    					gp.setVersion(ps.get(0).getVersion());
-    					return this.GetPlanePorts(email, gp);
-    				}else {
-    					return null;
-    				}
+    				return ps;
     				}else {
     					return null;
     				}
