@@ -92,4 +92,11 @@ public class WebServiceRestGetInfoPlanes {
 	public Integer planesToApprove(@RequestHeader("Email") String email) {
 		return infoPlanes.planesToApprove(email);
 	}
+	
+	@PostMapping("/getDTIPlanes")
+	@CrossOrigin(origins = "*")
+	@ResponseStatus(HttpStatus.OK)
+	public ArrayList<SendInfoPlane> getDTIPlanes (@RequestHeader("Email") String email) {
+		return infoPlanes.getDTIPlanes (email);
+	}
 }

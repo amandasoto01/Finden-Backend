@@ -428,6 +428,53 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     }
 
     @Transactional
+    public ArrayList<SendInfoPlane> getDTIPlanes (String email){
+    	if(!Check(email, 2)) {
+    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+    		ArrayList<SendInfoPlane>ip= new ArrayList<SendInfoPlane>();
+    				Floor floor;
+    	    		SendInfoPlane sip;
+    	    		Iterable<Plane> P = planeDAO.findAll();
+    	    		for (Plane p :P) {
+    					sip= new SendInfoPlane();
+    					floor=floorDAO.findById(p.getFloor_id()).get();
+    					if(p.getState()==4) {
+    						sip.setStatus("actual");
+    					}else if(p.getState()==3) {
+    						sip.setStatus("aprobado");
+    					}else if(p.getState()==2) {
+    						sip.setStatus("rechazado");
+    					}else if(p.getState()==1) {
+    						sip.setStatus("en revisión");
+    					}
+    					sip.setBuilding(buildingDAO.findById(p.getFloor_Building_Id()).get().getNumber()+"-"+buildingDAO.findById(p.getFloor_Building_Id()).get().getName());
+						if(floor.getNumber()> 0) {
+    						sip.setFloor("Piso - "+floor.getNumber());
+    					}else {
+    						sip.setFloor("Sotano "+floor.getNumber());
+    					}
+    					sip.setName(p.getName());
+						sip.setDescription(p.getDescription());
+						if(p.getVersion()==null) {
+							sip.setVersion(0);
+						}else {
+							sip.setVersion(p.getVersion());
+						}
+						sip.setObservation(p.getObservation());
+						if(p.getDateApproval()!=null) {
+							
+							sip.setDateApproval(formatter.format(p.getDateApproval()));	
+						}
+						sip.setDateUpload(formatter.format(p.getDateUpload()));
+						ip.add(sip);
+    				}
+    	    		return ip;
+    	}else {
+    		return null;
+    	}
+    }
+    
+    @Transactional
     public ArrayList<SendInfoPlane> GetAllPlanesDTI(String email,SendInfoPlane user){
     	if(!Check(email, 2)) {
     		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
@@ -515,6 +562,7 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
+
     
     @Transactional
     public ArrayList<SendInfoPlane> getAllPlanesActual(String email,SendInfoPlane user) {

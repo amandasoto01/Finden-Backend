@@ -30,4 +30,6 @@ public interface FacadeGetInfoPlanes {
 	public ArrayList<SendInfoPlane> getAllPlanesActual(String email,SendInfoPlane user);
 	
 	public Integer planesToApprove(String email);
+	
+	public ArrayList<SendInfoPlane> getDTIPlanes (String email);
 }
