@@ -1,9 +1,5 @@
 package com.Finden.findenBackEnd.WS;
-/**
- * Esta clase es la encargada de recibir las peticiones de información de los puertos
- * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
- * @version 11/11/2019
- */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Finden.findenBackEnd.models.entity.AddPort;
 import com.Finden.findenBackEnd.models.entity.AllInfoPort;
 import com.Finden.findenBackEnd.models.service.FacadeGetPort;
-
+/**
+ * Esta clase es la encargada de recibir las peticiones de información de los puertos
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")

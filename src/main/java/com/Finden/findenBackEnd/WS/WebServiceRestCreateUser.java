@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.service.FacadeCreateUser;
-
-@CrossOrigin(origins = {"http://localhost:4200"})
-@RestController
-@RequestMapping("/finden")
 /**
  * Esta clase es la encargada de recibir las peticiones de agregar un usuario
  * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
  * @version 11/11/2019
  */
+@CrossOrigin(origins = {"http://localhost:4200"})
+@RestController
+@RequestMapping("/finden")
 public class WebServiceRestCreateUser {
 	
 	@Autowired
