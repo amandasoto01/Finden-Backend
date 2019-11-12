@@ -1,1 +1,5 @@
+com.Finden.findenBackEnd
+com.Finden.findenBackEnd.WS
+com.Finden.findenBackEnd.models.dao
+com.Finden.findenBackEnd.models.entity
 com.Finden.findenBackEnd.models.service
