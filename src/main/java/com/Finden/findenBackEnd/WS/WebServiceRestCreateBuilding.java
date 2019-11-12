@@ -14,7 +14,7 @@ import com.Finden.findenBackEnd.models.entity.AddBuilding;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeCreateBuilding;
 /**
- * Esta clase es la interface para la logica de negocio de crear un edificio
+ * Esta clase es la encargada de recibir las peticiones de agregar un edificio
  * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
  * @version 11/11/2019
  */

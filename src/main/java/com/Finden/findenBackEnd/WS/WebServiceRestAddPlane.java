@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeAddPlane;
 /**
- * Esta clase es la encargada de recibir las peticiones de agregar plano
+ * Esta clase es la encargada de recibir las peticiones de agregar un plano
  * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
  * @version 11/11/2019
  */

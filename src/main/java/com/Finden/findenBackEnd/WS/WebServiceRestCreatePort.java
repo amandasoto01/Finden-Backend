@@ -19,7 +19,7 @@ import com.Finden.findenBackEnd.models.entity.PortList;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeCreatePort;
 /**
- * Esta clase es la interface para la logica de negocio de crear un puerto
+ * Esta clase es la encargada de recibir las peticiones de agregar un puerto
  * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
  * @version 11/11/2019
  */
