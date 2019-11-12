@@ -35,7 +35,7 @@ public class FacadeDeletePortImpl implements FacadeDeletePort{
 				Port p=portDAO.findByName(port);
 				if(p==null) {
 					res.setRequest(false);
-					res.setRes("El puerto no existe recuerde que el nombre del puerto debe ser: nombre del centro de cableado “-” número de identificación del puerto en el patchpanel. ");
+					res.setRes("El puerto no existe recuerde que el nombre del puerto debe ser: nombre del centro de cableado '-' número de identificación del puerto en el patchpanel. ");
 					return res;
 				}else {
 					portDAO.delete(p);

@@ -14,7 +14,7 @@ public class AddPort {
 	private String wiringcenter;
 	/**
 	 * Método para obtener el edificio donde se ubica el puerto
-	 * return El edificio donde se ubica el puerto
+	 * @return El edificio donde se ubica el puerto
 	 */
 	public Integer getBuilding() {
 		return Building;
