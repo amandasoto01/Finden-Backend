@@ -13,15 +13,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeAddPlane;
-
+/*
+*Setencencia que se utiliza para crear el servicio que recibe una respuesta HTTP busacando en el formulario finden
+*/
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
+/*
+*Clase encargada de recibir las peticiones de añadir plano
+*/
 public class WebServiceRestAddPlane {
-	
+	/*
+	*Atributo de donde se extrae la logica necesaria para presentar la pantalla de añadir plano
+	*/
 	@Autowired
 	private FacadeAddPlane addPlane;
-	
+	/*
+	*Servicio POST hacia el formulario addPlane
+	*/
 	@PostMapping("/addPlane")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)
