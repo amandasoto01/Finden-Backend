@@ -13,32 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Finden.findenBackEnd.models.entity.Addwritingcenter;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeCreateWiringCenter;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP buscando en el formulario finden
-*/
+/**
+ * Esta clase es la interface para la logica de negocio de crear un centro de cableado
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de crear centro de cableado
-*/
+
 public class WebServiceRestCreateWiringCenter {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de crear un centro de cableado
-	*/
+
 	@Autowired
 	private FacadeCreateWiringCenter createWiringCenter;
-	/*
-	*Servicio POST hacia el formulario addWiringCenter
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de determinar el tipo de servicio que se va a usar, crear un centro de cableado
-	*/
+	/**
+	 * Método para agregar un centro de cableado 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param usuario información del centro de cableado a agregar
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/addWiringCenter")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request CreateWieringCenter(@RequestHeader("Email") String email,@RequestBody Addwritingcenter add) {
 		System.out.println(add.getSwitches().toString());
 		return createWiringCenter.CreateWiringCenter(email,add);

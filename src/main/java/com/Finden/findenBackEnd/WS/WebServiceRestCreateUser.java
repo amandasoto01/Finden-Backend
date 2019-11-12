@@ -13,32 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.service.FacadeCreateUser;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP buscando en el formulario finden
-*/
+
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de crear usuario
-*/
+/**
+ * Esta clase es la encargada de recibir las peticiones de agregar un usuario
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 public class WebServiceRestCreateUser {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de crear usuario
-	*/
+	
 	@Autowired
 	private FacadeCreateUser user;
-	/*
-	*Servicio POST hacia el formulario create
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de determinar el tipo de servicio que se va a usar, crear un usuario
-	*/
+	/**
+	 * Método para agregar un usuario 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param usuario información del usuario a agregar
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/create")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request CreateUser(@RequestHeader("Email") String email,@RequestBody User usuario) {
 		return user.Create(usuario, email);
 	}

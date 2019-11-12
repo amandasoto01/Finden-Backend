@@ -18,62 +18,52 @@ import com.Finden.findenBackEnd.models.entity.GetPlane;
 import com.Finden.findenBackEnd.models.entity.PortList;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeCreatePort;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP buscando en el formulario finden
-*/
+/**
+ * Esta clase es la interface para la logica de negocio de crear un puerto
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de crear puerto
-*/
-
 public class WebServiceRestCreatePort {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de crear puerto
-	*/
+
 	@Autowired
 	private FacadeCreatePort createPort;
-	
-	/*
-	*Servicio POST hacia el formulario addPort
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de determinar el tipo de servicio que se a usar, crear un puerto
-	*/
+	/**
+	 * Método para agregar un edificio 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param add la información del nuevo puerto
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/addPort")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request CreatePort(@RequestHeader("Email") String email,@RequestBody AddPort add) {
 		return createPort.CreatePort(email,add);
 	}
-	/*
-	*Servicio POST hacia el formulario addPlane
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de determinar el tipo de servicio que se va a usar, crear un plano
-	*/
+	/**
+	 * Método que ve los puertos de un plano si no existen los crea
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param plane información del plano
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/planePorts")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public ArrayList<PortList> GetPlanePorts(@RequestHeader("Email") String email,@RequestBody GetPlane plane) {
 		return createPort.GetPlanePorts(email, plane);
 	}
-	/*
-	*Servicio POST hacia el formulario addPlane
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de determinar el tipo de servicio que se va a usar, crearun piso
-	*/
+	/**
+	 * Método que ve los puertos de un piso en especifico
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param edificio numero del edificio a buscar
+	 * @param piso numero del  piso a buscar
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/getPortsFloor/{edificio}/{piso}")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public ArrayList<PortList> getPortsFloor(@RequestHeader("Email") String email,@PathVariable Integer edificio,@PathVariable  Integer piso ) {
 		return createPort.getPortsFloor(email,edificio,piso);
 	}

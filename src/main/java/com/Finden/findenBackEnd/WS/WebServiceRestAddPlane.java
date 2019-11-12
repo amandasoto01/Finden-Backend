@@ -13,32 +13,29 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeAddPlane;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP busacando en el formulario finden
-*/
+/**
+ * Esta clase es la encargada de recibir las peticiones de agregar plano
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de añadir plano
-*/
+
 public class WebServiceRestAddPlane {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de añadir plano
-	*/
+	
 	@Autowired
 	private FacadeAddPlane addPlane;
-	/*
-	*Servicio POST hacia el formulario addPlane
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de notificar el exito de publicar el servicio
-	*/
+	/**
+	 * Método para agregar un plano 
+	 * @param Email- correo de quien esta haciendo la acción
+	 * @param File - Archivo .DXF
+	 * @param description - Breve descripción del plano
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/addPlane")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request AddPlane(@RequestHeader("Email") String email,@RequestBody MultipartFile File,@RequestHeader("description")String Description) {
 		return addPlane.AddPLane(email, File,Description); 
 	}

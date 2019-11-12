@@ -3,7 +3,7 @@ package com.Finden.findenBackEnd.models.service;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
 /**
- * Esta clase es la interface para la logica de negocio de crear usuarios
+ * Esta clase es la interface para la logica de negocio de crear un usuarios
  * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
  * @version 11/11/2019
  */
