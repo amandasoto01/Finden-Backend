@@ -1,5 +1,9 @@
 package com.Finden.findenBackEnd.WS;
-
+/**
+ * Esta clase es la encargada de recibir las peticiones de información de los puertos
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,14 +25,24 @@ public class WebServiceRestGetPort {
 
 	@Autowired
 	private FacadeGetPort FindPort;
-	
+	/**
+	 * Método para obtener toda la información un puerto con la integración a HPeIMC
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a buscar
+	 * @return Toda la información de un usuario
+	 */
 	@PostMapping("/findPort")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)
 	public AllInfoPort findPort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return FindPort.FindPort(email, port);
 	}
-	
+	/**
+	 * Método para obtener toda la información un puerto en el sistema
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a buscar
+	 * @return Toda la información de un usuario
+	 */
 	@PostMapping("/getPort")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)

@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Finden.findenBackEnd.models.entity.ApprovePlane;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeUpdatePlane;
-
+/**
+ * Esta clase es la encargada de recibir las peticiones de modificación de los planos
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
@@ -21,7 +25,12 @@ public class WebServiceRestUpdatePlane {
 	
 	@Autowired
 	private FacadeUpdatePlane updatePlane;
-	
+	/**
+	 * Método para aprovar o rechazar un plano
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param approvePlane nombre del plano y si se recazo o aprovo
+	 * @return si el servicio funciono o no 
+	 */
 	@PostMapping("/approve")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)

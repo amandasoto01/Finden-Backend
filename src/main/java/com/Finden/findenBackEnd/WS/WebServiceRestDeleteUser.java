@@ -12,32 +12,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeDeleteUser;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP buscando en el formulario finden
-*/
+/**
+ * Esta clase es la encargada de recibir las peticiones de eliminar un usuario
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de eliminar usuario
-*/
 public class WebServiceRestDeleteUser {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de eliminar usuario
-	*/
+
 	@Autowired
 	private FacadeDeleteUser delete;
-	/*
-	*Servicio DELETE hacia el formulario create
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de informar la eliminación de correcta de un usuario
-	*/
+	/**
+	 * Método para Eliminar un puerto 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param correo email del usuario a eliminar
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/deleteUser")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.OK)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request DeleteUser(@RequestHeader("Email") String email,@RequestBody String correo) {
 		return delete.Delete(correo, email);
 	}

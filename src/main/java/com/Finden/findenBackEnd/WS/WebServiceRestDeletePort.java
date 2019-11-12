@@ -12,33 +12,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.service.FacadeDeletePort;
-/*
-*Sentencencia que se utiliza para crear el servicio que recibe una respuesta HTTP buscando en el formulario finden
-*/
+/**
+ * Esta clase es la encargada de recibir las peticiones de eliminar un puerto
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping("/finden")
-/*
-*Clase encargada de recibir las peticiones de eliminarun puerto
-*/
-
 public class WebServiceRestDeletePort {
-	/*
-	*Instancia de la logica de negocio que se utiliza para presentar la pantalla de eliminar un puerto
-	*/
+
 	@Autowired
 	private FacadeDeletePort deletePort;
-	/*
-	*Servicio DELETE hacia el formulario deletePort
-	*origins, habilita todos los permisos del HTTP.
-	*responseStatus, Se encarga de informar la eliminacion de un puerto
-	*/
+	/**
+	 * Método para Eliminar un puerto 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a eliminar
+	 * @return si la función funciono o no 
+	 */
 	@PostMapping("/deletePort")
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
-	/*
-	*Metodo encargado de la creacion del JASON para luego enviarlo
-	*/
 	public Request DeletePort(@RequestHeader("Email") String email,@RequestBody String port) {
 		return deletePort.DeletePort(port, email);
 	}
