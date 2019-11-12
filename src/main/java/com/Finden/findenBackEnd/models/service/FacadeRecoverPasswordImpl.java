@@ -23,13 +23,21 @@ import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.Correction;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio cambio de contraseña
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeRecoverPasswordImpl implements FacadeRecoverPassword{
 	
 	@Autowired
 	private UserDAO userDAO;
-
+	/**
+	 * Método para generar un codigo con el cual se genera el cambio de la contraseña
+	 * @param user correo de quien esta haciendo la acción
+	 * @return si el servicio funciono o no
+	 */
 	@Override
 	@Transactional
 	public Request Send(User user) {
@@ -64,7 +72,11 @@ public class FacadeRecoverPasswordImpl implements FacadeRecoverPassword{
 			}
 		}
 	}
-	
+	/**
+	 * Método para hacer el cambio de contraseña
+	 * @param user información para la generación de la nueva contraseña 
+	 * @return si el servicio funciono o no
+	 */
 	@Override
 	@Transactional
 	public Request CorrectPassword(Correction nuevo) {
@@ -108,7 +120,10 @@ public class FacadeRecoverPasswordImpl implements FacadeRecoverPassword{
 			}
 		}
 	}
-	
+	/**
+	 * Método para generar un codigo con el cual se genera el cambio de la contraseña
+	 * @return codigo para la recuperación de la contraseña
+	 */
 	public String CreatCode() {
 		String codigo="";
 		Random r = new Random();
@@ -117,7 +132,12 @@ public class FacadeRecoverPasswordImpl implements FacadeRecoverPassword{
 		}
 		return codigo;
 	}
-	
+	/**
+	 * Método para enviar un correo con el codigo de recuperación
+	 * @param Correo dirección de correo a la que se va enviar el mail
+	 * @param u información del usuario como nombre y codigo de recuperación
+	 * @return si el servicio funciono o no
+	 */
 	public Request SendEmail(String Correo,User u) {
 		Request res = new Request();
 		Properties props = new Properties();

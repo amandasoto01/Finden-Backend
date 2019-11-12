@@ -30,7 +30,11 @@ import com.Finden.findenBackEnd.models.entity.Switch;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.WritingCenter;
 import com.google.gson.Gson;
-
+/**
+ * Esta clase es la logica de negocio de obtener información general un puerto
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @SuppressWarnings("deprecation")
 @Service
 public class FacadeGetPortImpl implements FacadeGetPort{
@@ -52,7 +56,12 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 	
 	@Autowired
 	private FloorDAO floorDAO;
-	
+	/**
+	 * Método para obtener toda la información un puerto con la integración a HPeIMC
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a buscar
+	 * @return Toda la información de un usuario
+	 */
 	@Override
 	@Transactional
 	public AllInfoPort FindPort(String email, String port) {
@@ -103,7 +112,12 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 		}
 		
 	}
-
+	/**
+	 * Método para obtener toda la información un puerto en el sistema
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a buscar
+	 * @return Toda la información de un usuario
+	 */
 	@Transactional
 	public AddPort getPort(String email,String port) {
 		AddPort send= new AddPort();
@@ -136,7 +150,12 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 			return null;
 		}
 	}
-	
+	 /**
+		 * Método que verifica si un usuario es un tipo en especifico
+		 * @param Email- correo de quien esta haciendo la acción 
+		 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+		 * @return Si el usuario es de un tipo o no
+		 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -160,13 +179,20 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 			return false;
 		}
 	}
-	
+	 /**
+		 * Método para la integración con HPeIMC(este metodo para que funcione se debe agregar usuario y contraseña)
+		 * @param wc id del centro de cableado
+		 * @param port id del puerto en switch
+		 * @return estado, mac y velocidad del puerto
+		 */
 	private GetInfo FindHpeIMC(int wc,int port) throws ClientProtocolException, IOException {
         @SuppressWarnings("resource")
+        String user="puj_finden";
+        String password="javeriana2019*";
 		DefaultHttpClient client = new DefaultHttpClient();
         client.getCredentialsProvider().setCredentials(
             new AuthScope("10.26.1.103", 8080, "iMC RESTful Web Services"),
-            new UsernamePasswordCredentials("puj_finden", "javeriana2019*"));
+            new UsernamePasswordCredentials(user, password));
         HttpGet get = new HttpGet("http://10.26.1.103:8080/imcrs/plat/res/device/"+wc+"/interface/"+port);
         get.addHeader("accept", "application/json");
         HttpResponse response = client.execute(get);
@@ -175,7 +201,11 @@ public class FacadeGetPortImpl implements FacadeGetPort{
         return info;
    
 	}
-	
+	/**
+	 * Método para hacer mas legible la velocidad de conexión
+	 * @param number velocidad de conexión en numero
+	 * @return velocidad de conexicón en Kb, Mb o Gb
+	 */
 	private String Parse(String number) {
 		String res= new String();
 		int n= Integer.parseInt(number);

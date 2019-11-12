@@ -12,13 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de modificar un usuario
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeUpdateUserImpl implements FacadeUpdateUser{
 	
 	@Autowired
 	private UserDAO userDAO;
-	
+	/**
+	 * Método para modificar un usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param usuario información del usario a modificar
+	 * @return si el servicio funciono o no 
+	 */
 	@Override
 	@Transactional
 	public Request UpdateUser(User usuario, String email) {
@@ -71,7 +80,12 @@ public class FacadeUpdateUserImpl implements FacadeUpdateUser{
 			return res;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

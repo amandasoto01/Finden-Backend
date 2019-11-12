@@ -17,7 +17,11 @@ import com.Finden.findenBackEnd.models.entity.Building;
 import com.Finden.findenBackEnd.models.entity.Floor;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de agregar un edificio
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 	
@@ -30,7 +34,12 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 	@Autowired
 	private FloorDAO floorDAO;
 	
-	@Override
+	/**
+	 * Método para agregar un edificio 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param add la información del nuevo edificio
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request CreateBuilding(String correo, AddBuilding add) {
 		Request res= new Request();
@@ -108,7 +117,12 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 			return res;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un piso y un edificio existe
+	 * @param building numero del eidificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return una lista de enteros donde se retorna el id de edificio y piso
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -132,7 +146,11 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 			return false;
 		}
 	}
-
+	/**
+	 * Método que verifica si  edificio existe
+	 * @param building numero del edificio a buscar 
+	 * @return si el edificio existe o no
+	 */
 	private boolean checkBuildings(Building building) {
 		boolean is= false;
 		Iterable<Building>I;
@@ -144,25 +162,40 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 		}
 		return is;
 	}
-	
+	/**
+	 * Método que crea una carpeta donde se va guardar los planos del edificio
+	 * @param number numero del edificio
+	 * @return si existia o no la carpeta
+	 */
 	private boolean CreateFolder(int number) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number);
 		 return direc.mkdir();
 }
-
+	/**
+	 * Método que crea una carpeta donde se va guardar los planos de los distintos sotanos del edificio
+	 * @param number numero del edificio
+	 * @param j numero de sotanos
+	 */
 	private void CreateFolderBasement(int number, int j) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 		direc.mkdir();
 		CreateFolderApprovedReview("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 	}
-
+	/**
+	 * Método que crea una carpeta donde se va guardar los planos aprobados del edificio
+	 * @param ruta lugar donde se va crear la carpeta
+	 */
 	private void CreateFolderApprovedReview(String ruta) {
 		File direc= new File(ruta+"/aprobado");
 		direc.mkdir();
 		direc=new File(ruta+"/revisión");
 		direc.mkdir();
 	}
-	
+	/**
+	 * Método que crea una carpeta donde se va guardar los planos de los distintos pisos del edificio
+	 * @param number numero del edificio
+	 * @param i numero de pisos
+	 */
 	private void CreateFolderFloor(int number, int i) {
 		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/piso "+i);
 		direc.mkdir();

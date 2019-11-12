@@ -18,7 +18,12 @@ public class FacadeDeleteuserImpl implements FacadeDeleteUser{
 	@Autowired
 	private UserDAO userDAO;
 	
-	@Override
+	/**
+	 * Método para Eliminar un puerto 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param correo email del usuario a eliminar
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request Delete(String correo, String email) {
 		Request res = new Request();
@@ -57,7 +62,12 @@ public class FacadeDeleteuserImpl implements FacadeDeleteUser{
 			return res;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

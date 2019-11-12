@@ -20,7 +20,11 @@ import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.Switch;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.WritingCenter;
-
+/**
+ * Esta clase es la interface para la logica de negocio de crear usuarios
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeCreateWiringCenterImpl implements FacadeCreateWiringCenter{
 
@@ -39,7 +43,12 @@ public class FacadeCreateWiringCenterImpl implements FacadeCreateWiringCenter{
 	@Autowired
 	private SwitchDAO  switchDAO;
 	
-	@Override
+	/**
+	 * Método para agregar un centro de cableado 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param usuario información del centro de cableado a agregar
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request CreateWiringCenter(String correo, Addwritingcenter add) {
 		Request res= new Request();
@@ -124,7 +133,12 @@ public class FacadeCreateWiringCenterImpl implements FacadeCreateWiringCenter{
 			return res;
 		}
 	}	
-
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -148,7 +162,12 @@ public class FacadeCreateWiringCenterImpl implements FacadeCreateWiringCenter{
 			return false;
 		}
 	}
-
+	/**
+	 * Método que verifica si un piso y un edificio existe
+	 * @param building numero del eidificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return una lista de enteros donde se retorna el id de edificio y piso
+	 */
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
 		Building b= new Building();

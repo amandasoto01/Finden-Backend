@@ -42,7 +42,11 @@ import com.Finden.findenBackEnd.models.entity.PlaneXUser;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.SendInfoPlane;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de obtener información general de los planos
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 	
@@ -60,7 +64,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 	
 	@Autowired
 	private PlaneXUserDAO pxuDAO;
-	
+	/**
+	 * Método que genere una prevalidación del plano (numero de puertos encontrados por cada tipo)
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param file el archivo .DXF a verificar
+	 * @return el resultado de la prevalidación
+	 */
 	@Override
 	@Transactional
 	public Request CheckPlane(String Email, MultipartFile file) {
@@ -134,7 +143,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 			return req;
 		}
 	}
-	
+	/**
+	 * Método para obtener el archivo .dxf
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param plane información del plano a buscar
+	 * @return el archivo .dxf
+	 */
 	@Transactional
 	public ResponseEntity<Resource> GetPlane(String email,GetPlane plane) {
 		if(Check(email, 1)||Check(email, 3)) {
@@ -183,7 +197,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 			return null;
 		}
 	}
-
+	/**
+	 * Método para obtener todos los planos segun un nombre
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param plane nombre del plano a buscar
+	 * @return lista de planos
+	 */
 	@Transactional
 	public ArrayList<HistorialPlane> Historial(String email,String plane){
 		if(Check(email, 1)||Check(email, 3)) {
@@ -221,7 +240,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 			return null;
 		}
 	}
-
+	/**
+	 * Método para obtener todos los planos aprovados por usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param user correo del usuario quien subio el plano
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> GetApproved(String email,String user){
     	if(!Check(email, 2)) {
@@ -285,7 +309,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-	
+    /**
+	 * Método para obtener todos los planos rechazados por usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param user correo del usuario quien subio el plano
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> GetRejected(String email,String user){
     	if(!Check(email, 2)) {
@@ -347,7 +376,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-
+    /**
+	 * Método para obtener todos los planos por usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param user correo del usuario quien subio el plano
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> GetAllPlanes(String email,String user){
     	if(!Check(email, 2)) {
@@ -426,7 +460,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-
+    /**
+	 * Método para obtener todos los planos 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> getDTIPlanes (String email){
     	if(!Check(email, 2)) {
@@ -473,7 +511,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener todos los planos segun una información
+	 * @param Email correo de quien esta haciendo la acción
+	 * @user plane información de los planos a buscar
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> GetAllPlanesDTI(String email,SendInfoPlane user){
     	if(!Check(email, 2)) {
@@ -562,8 +605,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-
-    
+    /**
+	 * Método para obtener todos los planos aprovados segun una información
+	 * @param Email correo de quien esta haciendo la acción
+	 * @user plane información de los planos a buscar
+	 * @return lista de planos
+	 */
     @Transactional
     public ArrayList<SendInfoPlane> getAllPlanesActual(String email,SendInfoPlane user) {
     	if(!Check(email, 2)) {
@@ -652,7 +699,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener el numero de planos por aprovar
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return El numero de planos por aprovar
+	 */
     @Transactional
     public Integer planesToApprove(String email) {
     	if(Check(email, 1)) {
@@ -670,7 +721,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
     		return null;
     	}
     }
-    
+    /**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -694,7 +750,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 			return false;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un piso y un edificio existe
+	 * @param building numero del eidificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return una lista de enteros donde se retorna el id de edificio y piso
+	 */
 	private List<Integer>CheckBuildingFloor(int building,int floor){
 		Boolean NoProblem=true;
 		List<Integer>res= new ArrayList<Integer>();
@@ -733,7 +794,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 		}
 		return res;
 	}
-
+	/**
+	 * Método convierte un multiparFile a File
+	 * @param file archivo a convertir
+	 * @return archivo convertido
+	 */
 	private  File convert(MultipartFile file) throws IOException {
 		File convFile = new File(file.getOriginalFilename());
 		convFile.createNewFile();
@@ -742,7 +807,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 		fos.close();
 		return convFile;
 	}
-
+	/**
+	 * Método que mira los puertos en un plano y si no existen los crea
+	 * @param filePath ruta del plano
+	 * @return una lista de puertos
+	 */
 	private String GetNumberPorts(String filePath) throws ParseException {
         int portsVD=0,portsV=0,portsD=0,RportsVD=0,RportsV=0,RportsD=0;
         StringTokenizer token;
@@ -790,7 +859,12 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
         		+ portsD+" tipo D "+RportsD+" Repetidos del tipo D\n"
         		+ "y otros que no se cuentas:\n"+others;
     }
-
+	/**
+	 * Método que verifica que si un puerto ya existe en una lista
+	 * @param name nombre del puerto
+	 * @param list lista de puertos
+	 * @return si existe o no 
+	 */
 	private boolean ChecknamePorts(ArrayList<String> list,String name) {
 		boolean exist=true;
 		for (int i = 0; i < list.size(); i++) {
@@ -800,7 +874,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 		}
 		return exist;
 	}
-	
+	/**
+	 * Método que ordena los planos en: en revision, actual, aprovados , rechazados
+	 * @param list lista de planos
+	 * @return lista de planos ordena
+	 */
 	private ArrayList<SendInfoPlane> Order(ArrayList<SendInfoPlane> planes){
 		ArrayList<SendInfoPlane>order= new ArrayList<SendInfoPlane>();
 		for (int i = 0; i < planes.size(); i++) {
@@ -826,7 +904,11 @@ public class FacadeGetInfoPlanesImpl implements FacadeGetInfoPlanes{
 		}
 		return order;
 	}
-
+	/**
+	 * Método para obtener solo los planos aprobados de una lista
+	 * @param list lista de planos
+	 * @return lista de planos aprobados
+	 */
 	private ArrayList<SendInfoPlane> getAprove(ArrayList<SendInfoPlane> planes){
 		ArrayList<SendInfoPlane>order= new ArrayList<SendInfoPlane>();
 		for (int i = 0; i < planes.size(); i++) {

@@ -12,13 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es  la logica de negocio de crear usuarios
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeCreateUserImpl implements FacadeCreateUser{
 	
 	@Autowired
 	private UserDAO userDAO;
-	
+	/**
+	 * Método para agregar un puerto 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param usuario información del usuario a agregar
+	 * @return si la función funciono o no 
+	 */
 	@Override
 	@Transactional
 	public Request Create(User usuario, String email) {
@@ -68,7 +77,12 @@ public class FacadeCreateUserImpl implements FacadeCreateUser{
 		}
 
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -92,7 +106,11 @@ public class FacadeCreateUserImpl implements FacadeCreateUser{
 			return false;
 		}
 	}
-
+	/**
+	 * Método que verifica si un usuario existe
+	 * @param usuario la información de usuario a ser agregado
+	 * @return Si el usuario existe o no 
+	 */
 	private boolean Check(User usuario) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

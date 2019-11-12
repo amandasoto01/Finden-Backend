@@ -14,7 +14,11 @@ import com.Finden.findenBackEnd.models.dao.SwitchDAO;
 import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.dao.WritingCenterDAO;
 import com.Finden.findenBackEnd.models.entity.*;
-
+/**
+ * Esta clase es la logica de negocio de obtener información general
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
 	
@@ -33,7 +37,12 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
 	@Autowired
 	private SwitchDAO  switchDAO;
 	
-	
+	/**
+	 * Método para obtener toda la información un usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param user correo del usuario a buscar
+	 * @return Toda la información de un usuario
+	 */
 	@Override
 	@Transactional
 	public User GetUser(String email,String user) {
@@ -56,7 +65,11 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
 		}
 	}
 	
-    
+	/**
+	 * Método para obtener los usuarios
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return Los usuarios registrados en el sistema
+	 */
     public ArrayList<SendInfoUser>GetUsers(String email){
     	if(Check(email, 1)) {
     		ArrayList<SendInfoUser>siu= new ArrayList<SendInfoUser>();
@@ -80,7 +93,11 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener los centros de cableado
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return Los centros de cableado registrados en el sistema
+	 */
     @Transactional
     public ArrayList<String> GetWritingCenter(String email){
     	if(Check(email, 1)) {
@@ -94,7 +111,12 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener los switches de un centro de cableado
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param Wc nombre del centro de cableado a buscar
+	 * @return Los pisos registrados en el sistema
+	 */
     @Transactional
     public ArrayList<Integer> getSwitches(String email,String Wc){
     	ArrayList<Integer> sws= new ArrayList<Integer>();
@@ -122,7 +144,11 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener los edificios
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return Los edificios registrados en el sistema
+	 */
     @Transactional
     public ArrayList<SendInfoBuildng>GetBuildings(String email){
     	if(Check(email, 1)) {
@@ -140,7 +166,11 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
     		return null;
     	}
     }
-   
+    /**
+	 * Método para obtener los pisos
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return Los pisos registrados en el sistema
+	 */
     @Transactional
     public ArrayList<Integer>GetFloors(String email, String building){
     	ArrayList<Integer>floors= new ArrayList<Integer>();
@@ -181,7 +211,11 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
     		return null;
     	}
     }
-    
+    /**
+	 * Método para obtener el nombre del usuario
+	 * @param Email correo de quien esta haciendo la acción
+	 * @return El nombre del usuario
+	 */
     @Transactional
     public String getUsername(String email) {
     	User us = new User();
@@ -202,7 +236,12 @@ public class FacadeGetGeneralInfoImpl implements FacadeGetGeneralInfo{
 			return null;
 		}
     }
-    
+    /**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

@@ -23,7 +23,11 @@ import com.Finden.findenBackEnd.models.entity.Switch;
 import com.Finden.findenBackEnd.models.entity.UpdatePort;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.WritingCenter;
-
+/**
+ * Esta clase es la logica de negocio de modificar un puerto
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeUpdatePortImpl implements FacadeUpdatePort{
 	
@@ -44,7 +48,12 @@ public class FacadeUpdatePortImpl implements FacadeUpdatePort{
 	
 	@Autowired
 	private SwitchDAO  switchDAO;
-	
+	/**
+	 * Método para modificar un puerto
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param updatePort información del puerto a modificar
+	 * @return si el servicio funciono o no 
+	 */
 	@Transactional
 	public Request UpdatePort(String email,UpdatePort updatePort) {
 		Request res = new Request();
@@ -178,7 +187,12 @@ public class FacadeUpdatePortImpl implements FacadeUpdatePort{
 		}
 		
 	}
-	
+	/**
+	 * Método para modificar una lista de puertos
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param listPorts lista con información de los puertos a modificar
+	 * @return si el servicio funciono o no 
+	 */
 	@Transactional
 	public String Switches(String email,ListPorts listports) {
 		if(Check(email, 1)) {
@@ -199,7 +213,12 @@ public class FacadeUpdatePortImpl implements FacadeUpdatePort{
 			return "El usuario no tiene permiso para realizar esta acción";
 		}
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -223,7 +242,11 @@ public class FacadeUpdatePortImpl implements FacadeUpdatePort{
 			return false;
 		}
 	}
-	
+	/**
+	 * Método que verifica que tipo de puerto tiene
+	 * @param name el puerto para comvertir un tipo en numero 
+	 * @return el tipo en numero para guardarlo en el sistema
+	 */
 	private int CheckNamePort(String name) {
 		if(name.equals("V")) {
 			return 1;

@@ -24,7 +24,11 @@ import com.Finden.findenBackEnd.models.entity.Plane;
 import com.Finden.findenBackEnd.models.entity.PlaneXUser;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de agregar un plano
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeAddPlaneImpl implements FacadeAddPlane{
 	
@@ -42,7 +46,13 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 	
 	@Autowired
 	private PlaneXUserDAO pxuDAO;
-	
+	/**
+	 * Método para agregar un plano 
+	 * @param Email- correo de quien esta haciendo la acción
+	 * @param File - Archivo .DXF
+	 * @param description - Breve descripción del plano
+	 * @return El nombre del edificio de la instancia
+	 */
 	@Transactional
 	public Request AddPLane(String Email, MultipartFile plane,String description) {
 		Request req= new Request();
@@ -111,7 +121,12 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 			return req;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -135,7 +150,12 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 			return false;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un piso y un edificio existe
+	 * @param building numero del eidificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return una lista de enteros donde se retorna el id de edificio y piso
+	 */
 	private List<Integer>CheckBuildingFloor(int building,int floor){
 		Boolean NoProblem=true;
 		List<Integer>res= new ArrayList<Integer>();
@@ -174,7 +194,16 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 		}
 		return res;
 	}
-	
+	/**
+	 * Método que genera la ruta para guardar el plano en el sistema
+	 * @param plane - Archivo .DXF
+	 * @param Email- correo de quien esta haciendo la acción
+	 * @param path - la dirección para verificar si existe o se crea
+	 * @param description - Breve descripción del plano 
+	 * @param building numero del eidificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return un String donde se ve si funciono o genero un problema
+	 */
 	@Transactional
 	private String SavePlane(MultipartFile plane,String email,String path,String description,int floor,int Building) {
 		Plane p= new Plane();
@@ -231,7 +260,11 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 		}
 		
 	}
-	
+	/**
+	 * Método que gguarda el plano en el sistema
+	 * @param f - Archivo .DXF
+	 * @param path - la dirección donde se guardará el plano
+	 */
 	private void Save(MultipartFile f,String path) throws IOException {
 	File archivo= new File(path);
 	f.transferTo(archivo);

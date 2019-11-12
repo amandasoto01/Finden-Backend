@@ -23,7 +23,11 @@ import com.Finden.findenBackEnd.models.entity.ApprovePlane;
 import com.Finden.findenBackEnd.models.entity.Plane;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de modificar un plano
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 	
@@ -32,7 +36,12 @@ public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 	
 	@Autowired
 	private PlaneDAO planeDAO;
-	
+	/**
+	 * Método para aprovar o rechazar un plano
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param approvePlane nombre del plano y si se recazo o aprovo
+	 * @return si el servicio funciono o no 
+	 */
 	@Transactional
 	public Request ApprovePlane(String email, ApprovePlane approvePlane) {
 		Request res= new Request();
@@ -157,7 +166,12 @@ public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 			return res;
 		}
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -181,7 +195,11 @@ public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 			return false;
 		}
 	}
-
+	/**
+	 * Método para cambiar la ruta de un archivo 
+	 * @param origin donde se encuentra el archivo
+	 * @param destination lugar donde se va guardar el archivo
+	 */
     private void copyPlane(String origin, String destination) throws IOException {
         Path FROM = Paths.get(origin);
         Path TO = Paths.get(destination);

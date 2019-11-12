@@ -13,7 +13,11 @@ import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.Port;
 import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.User;
-
+/**
+ * Esta clase es la logica de negocio de eliminar un puerto
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeDeletePortImpl implements FacadeDeletePort{
 	
@@ -22,7 +26,12 @@ public class FacadeDeletePortImpl implements FacadeDeletePort{
 	
 	@Autowired
 	private PortDAO  portDAO;
-	
+	/**
+	 * Método para Eliminar un puerto 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param port nombre del puerto a eliminar
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request DeletePort(String port, String email) {
 		Request res= new Request();
@@ -51,7 +60,12 @@ public class FacadeDeletePortImpl implements FacadeDeletePort{
 			return res;
 		}
 	}
-
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

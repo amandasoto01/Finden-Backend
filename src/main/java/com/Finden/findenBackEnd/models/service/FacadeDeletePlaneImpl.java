@@ -15,7 +15,11 @@ import com.Finden.findenBackEnd.models.dao.UserDAO;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.Plane;
 import com.Finden.findenBackEnd.models.entity.PlaneXUser;
-
+/**
+ * Esta clase es  la logica de negocio de eliminar un plano
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeDeletePlaneImpl implements FacadeDeletePlane {
 
@@ -28,7 +32,12 @@ public class FacadeDeletePlaneImpl implements FacadeDeletePlane {
 	@Autowired
 	private PlaneXUserDAO pxuDAO;
 	
-	
+	/**
+	 * Método para Eliminar un plano 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param NamePlane nombre del plano a eliminar
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request DeletePlane(String Email, String NamePlane) {
 		Request res= new Request();
@@ -84,7 +93,12 @@ public class FacadeDeletePlaneImpl implements FacadeDeletePlane {
 		}
 
 	}
-	
+	/**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();

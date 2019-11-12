@@ -34,7 +34,11 @@ import com.Finden.findenBackEnd.models.entity.Request;
 import com.Finden.findenBackEnd.models.entity.Switch;
 import com.Finden.findenBackEnd.models.entity.User;
 import com.Finden.findenBackEnd.models.entity.WritingCenter;
-
+/**
+ * Esta clase es la logica de negocio de crear puertos
+ * @author Javier Marin, Juan Sebastian Bastos, Amanda Soto
+ * @version 11/11/2019
+ */
 @Service
 public class FacadeCreatePortImpl implements FacadeCreatePort{
 	
@@ -58,7 +62,12 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 	
 	@Autowired
 	private PlaneDAO planeDAO;
-	
+	/**
+	 * Método para agregar un edificio 
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param add la información del nuevo puerto
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public Request CreatePort(String correo, AddPort add) {
 		Request res = new Request();
@@ -129,7 +138,12 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 			return res;
 		}
 	}
-	
+	/**
+	 * Método que ve los puertos de un plano si no existen los crea
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param plane información del plano
+	 * @return si la función funciono o no 
+	 */
 	@Transactional
 	public ArrayList<PortList> GetPlanePorts(String email,GetPlane plane) {
 		ArrayList<PortList> ports = new ArrayList<>();
@@ -220,7 +234,13 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 			return null;
 		}
 	}
-	
+	/**
+	 * Método que ve los puertos de un piso en especifico
+	 * @param Email correo de quien esta haciendo la acción
+	 * @param edificio numero del edificio a buscar
+	 * @param piso numero del  piso a buscar
+	 * @return si la función funciono o no 
+	 */
     @Transactional
     public ArrayList<PortList> getPortsFloor(String email,Integer edificio, Integer piso){
     	if(Check(email, 1)) {
@@ -292,7 +312,12 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 			return null;
 		}
     }
-	
+    /**
+	 * Método que verifica si un usuario es un tipo en especifico
+	 * @param Email- correo de quien esta haciendo la acción 
+	 * @param i - El tipo de usuario donde 1 es DTI, 2 es mesa de servicio, 3 es contratista
+	 * @return Si el usuario es de un tipo o no
+	 */
 	private boolean Check(String email, int i) {
 		User us = new User();
 		List<User> u= new ArrayList<User>();
@@ -316,7 +341,12 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 			return false;
 		}
 	}
-
+	/**
+	 * Método que verifica si un piso existe
+	 * @param building numero del edificio a buscar 
+	 * @param floor numero del piso a buscar
+	 * @return si el piso existe o no
+	 */
 	private boolean checkBuildingsFloor(int building, int floor) {
 		boolean NoProblem= true;
 		Building b= new Building();
@@ -352,7 +382,11 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 		}
 		return NoProblem;
 	}
-	
+	/**
+	 * Método que verifica que tipo de puerto tiene
+	 * @param name el puerto para comvertir un tipo en numero 
+	 * @return el tipo en numero para guardarlo en el sistema
+	 */
 	private int CheckNamePort(String name) {
 		if(name.equals("V")) {
 			return 1;
@@ -364,7 +398,12 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 			return 0;
 		}
 	}
-
+	/**
+	 * Método que verifica que si el nombre del puerto ya existe
+	 * @param name el nombre del puerto
+	 * @param list lista de puertos en el sistema 
+	 * @return si el puerto ya existe o no
+	 */
 	private boolean ChecknamePorts(ArrayList<String> list,String name) {
 		boolean exist=true;
 		for (int i = 0; i < list.size(); i++) {
@@ -374,7 +413,11 @@ public class FacadeCreatePortImpl implements FacadeCreatePort{
 		}
 		return exist;
 	}
-	
+	/**
+	 * Método que mira los puertos en un plano y si no existen los crea
+	 * @param filePath ruta del plano
+	 * @return una lista de puertos
+	 */
 	private ArrayList<PortList> GetNumberPorts(String filePath) throws ParseException {
         StringTokenizer token;
         String type;
