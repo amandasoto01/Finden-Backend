@@ -85,9 +85,9 @@ public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 						plane.setState(4);
 						Date date= new Date();
 						plane.setDateApproval(date);
-						File dir = new File("C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado");
+						File dir = new File("C:/Users/finden/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado");
 						String [] NFiles=dir.list();
-						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-"+(NFiles.length+1)+".dxf";
+						String path="C:/Users/finden/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-"+(NFiles.length+1)+".dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
 						if(approvePlane.getDescription()!=null) {
@@ -113,7 +113,7 @@ public class FacadeUpdatePlaneImpl implements FacadeUpdatePlane{
 						plane.setState(4);
 						Date date= new Date();
 						plane.setDateApproval(date);
-						String path="C:/Users/javier/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-1.dxf";
+						String path="C:/Users/finden/Desktop/planos/Edificio "+building+"/"+pathNumber+"/aprobado/"+building+"-"+number+"-A-1.dxf";
 						pathNumber=plane.getDir();
 						plane.setDir(path);
 						if(approvePlane.getDescription()!=null) {

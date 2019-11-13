@@ -76,15 +76,22 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 					try {
 						GetInfo info=FindHpeIMC(wc.getIdWirtingCenter(),findPort.getPortInSwitch()+s.getIndex()-1);
 						AllInfoPort infoPort= new AllInfoPort();
-						if(info.getAdminStatusDesc().equals("Down")) {
-							infoPort.setMac("Sin conexión");
-							infoPort.setSpeed("Sin conexión");
+						if(info==null) {
+							infoPort.setMac("sin conexión a HPeIMC");
+							infoPort.setSpeed("sin conexión a HPeIMC");
+							infoPort.setState("sin conexión a HPeIMC");
 						}else {
-							infoPort.setMac(info.getPhyAddress());
-							infoPort.setSpeed(Parse(info.getIfspeed().toString()));
+							if(info.getAdminStatusDesc().equals("Down")) {
+								infoPort.setMac("Sin conexión");
+								infoPort.setSpeed("Sin conexión");
+							}else {
+								infoPort.setMac(info.getPhyAddress());
+								infoPort.setSpeed(Parse(info.getIfspeed().toString()));
+							}
+							infoPort.setState(info.getAdminStatusDesc());
 						}
 						
-						infoPort.setState(info.getAdminStatusDesc());
+						
 						String parameters="Edificio: "+buildingDAO.findById(findPort.getFloor_Building_Id()).get().getName();
 						parameters+=" N°: "+buildingDAO.findById(findPort.getFloor_Building_Id()).get().getNumber();
 						infoPort.setBuilding(parameters);
@@ -187,18 +194,22 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 		 */
 	private GetInfo FindHpeIMC(int wc,int port) throws ClientProtocolException, IOException {
         @SuppressWarnings("resource")
-        String user="puj_finden";
-        String password="javeriana2019*";
-		DefaultHttpClient client = new DefaultHttpClient();
-        client.getCredentialsProvider().setCredentials(
-            new AuthScope("10.26.1.103", 8080, "iMC RESTful Web Services"),
-            new UsernamePasswordCredentials(user, password));
-        HttpGet get = new HttpGet("http://10.26.1.103:8080/imcrs/plat/res/device/"+wc+"/interface/"+port);
-        get.addHeader("accept", "application/json");
-        HttpResponse response = client.execute(get);
-        Gson gson= new Gson();
-        GetInfo info=gson.fromJson(EntityUtils.toString(response.getEntity()), GetInfo.class);
-        return info;
+        String user="";
+        String password="";
+        if(!user.equals("")) {
+        	DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(
+                new AuthScope("10.26.1.103", 8080, "iMC RESTful Web Services"),
+                new UsernamePasswordCredentials(user, password));
+            HttpGet get = new HttpGet("http://10.26.1.103:8080/imcrs/plat/res/device/"+wc+"/interface/"+port);
+            get.addHeader("accept", "application/json");
+            HttpResponse response = client.execute(get);
+            Gson gson= new Gson();
+            GetInfo info=gson.fromJson(EntityUtils.toString(response.getEntity()), GetInfo.class);
+            return info;	
+        }else {
+        	return null;
+        }
    
 	}
 	/**

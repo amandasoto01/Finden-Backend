@@ -207,7 +207,7 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 	@Transactional
 	private String SavePlane(MultipartFile plane,String email,String path,String description,int floor,int Building) {
 		Plane p= new Plane();
-		File dir= new File("C:/Users/javier/Desktop/planos/"+path);
+		File dir= new File("C:/Users/finden/Desktop/planos/"+path);
 		Date date= new Date();
 		StringTokenizer token= new StringTokenizer(plane.getOriginalFilename(),".");
 		String name,auxname;
@@ -232,9 +232,9 @@ public class FacadeAddPlaneImpl implements FacadeAddPlane{
 		p.setFloor_id(floor);
 		p.setName(name);
 		p.setState(1);
-		p.setDir("C:/Users/javier/Desktop/planos/"+path+"/"+name);
+		p.setDir("C:/Users/finden/Desktop/planos/"+path+"/"+name);
 		try {
-			Save(plane,"C:/Users/javier/Desktop/planos/"+path+"/"+name);
+			Save(plane,"C:/Users/finden/Desktop/planos/"+path+"/"+name);
 			planeDAO.save(p);
 			p= new Plane();
 			p=planeDAO.findByName(name);
