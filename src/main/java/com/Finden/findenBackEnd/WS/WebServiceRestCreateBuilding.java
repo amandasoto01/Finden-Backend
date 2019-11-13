@@ -34,6 +34,7 @@ public class WebServiceRestCreateBuilding {
 	@CrossOrigin(origins = "*")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Request CreatBuilding(@RequestHeader("Email") String email,@RequestBody AddBuilding add) {
+		System.out.println(add.toString());
 		return createBuilding.CreateBuilding(email,add);
 	}
 

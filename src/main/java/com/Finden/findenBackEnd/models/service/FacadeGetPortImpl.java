@@ -77,9 +77,9 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 						GetInfo info=FindHpeIMC(wc.getIdWirtingCenter(),findPort.getPortInSwitch()+s.getIndex()-1);
 						AllInfoPort infoPort= new AllInfoPort();
 						if(info==null) {
-							infoPort.setMac("sin conexión a HPeIMC");
-							infoPort.setSpeed("sin conexión a HPeIMC");
-							infoPort.setState("sin conexión a HPeIMC");
+							infoPort.setMac("sin conexión a HPeIMC por favor ingrese usuario y contraseña en el servidor");
+							infoPort.setSpeed("sin conexión a HPeIMC por favor ingrese usuario y contraseña en el servidor");
+							infoPort.setState("sin conexión a HPeIMC por f avor ingrese usuario y contraseña en el servidor");
 						}else {
 							if(info.getAdminStatusDesc().equals("Down")) {
 								infoPort.setMac("Sin conexión");
@@ -103,7 +103,7 @@ public class FacadeGetPortImpl implements FacadeGetPort{
 							parameters="Sotano "+floorDAO.findById(findPort.getFloor_Id()).get().getNumber();
 						}
 						infoPort.setFloor(parameters);
-						infoPort.setWiringCenter(wc.getName());
+						infoPort.setWiringCenter(wc.getName()+" - Switch: "+s.getNumeroSwitch()+" - Puerto: "+findPort.getPortInSwitch());
 						return infoPort;
 					} catch (IOException e) {
 						return null;

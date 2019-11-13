@@ -168,7 +168,7 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 	 * @return si existia o no la carpeta
 	 */
 	private boolean CreateFolder(int number) {
-		File direc= new File("C:/Users/finden/Desktop/planos/Edificio "+number);
+		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number);
 		 return direc.mkdir();
 }
 	/**
@@ -177,9 +177,9 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 	 * @param j numero de sotanos
 	 */
 	private void CreateFolderBasement(int number, int j) {
-		File direc= new File("C:/Users/finden/Desktop/planos/Edificio "+number+"/sotano "+j);
+		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 		direc.mkdir();
-		CreateFolderApprovedReview("C:/Users/finden/Desktop/planos/Edificio "+number+"/sotano "+j);
+		CreateFolderApprovedReview("C:/Users/javier/Desktop/planos/Edificio "+number+"/sotano "+j);
 	}
 	/**
 	 * Método que crea una carpeta donde se va guardar los planos aprobados del edificio
@@ -197,9 +197,9 @@ public class FacadeCreateBuildingImpl implements FacadeCreateBuilding{
 	 * @param i numero de pisos
 	 */
 	private void CreateFolderFloor(int number, int i) {
-		File direc= new File("C:/Users/finden/Desktop/planos/Edificio "+number+"/piso "+i);
+		File direc= new File("C:/Users/javier/Desktop/planos/Edificio "+number+"/piso "+i);
 		direc.mkdir();
-		CreateFolderApprovedReview("C:/Users/finden/Desktop/planos/Edificio "+number+"/piso "+i);
+		CreateFolderApprovedReview("C:/Users/javier/Desktop/planos/Edificio "+number+"/piso "+i);
 		
 	}
 }
